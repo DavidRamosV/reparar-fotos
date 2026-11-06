@@ -20,6 +20,8 @@ Si es así, lo más probable es que una parte muy pequeña del archivo se haya d
 2. **Ábrelo con Google Chrome o Microsoft Edge**: haz doble clic en el archivo o arrástralo a una ventana del navegador.
 3. **Arrastra tus fotos**, elige en qué carpeta guardar y presiona **Reparar fotos**.
 
+**¿Prefieres no descargar nada?** Úsala en línea en **[davidramosv.github.io/reparar-fotos](https://davidramosv.github.io/reparar-fotos/)**. Funciona igual, y tus fotos tampoco se suben a ningún lado.
+
 ![La página con 16 fotos listas para reparar](docs/elegir-fotos.png)
 
 Al terminar verás una animación, y tus fotos quedarán en una carpeta nueva llamada **Imágenes recuperadas**, separadas así:
@@ -86,15 +88,40 @@ Se probó con fotos de una **Canon EOS Rebel T8i**: una con daño real y decenas
 ## Privacidad y seguridad
 
 - **Nada sale de tu computadora.** La página trae una regla de seguridad (*Content-Security-Policy*) que le prohíbe conectarse a internet: aunque quisiera, no podría enviar tus fotos.
-- **No hay servidor ni respaldos.** La herramienta no tiene servidor, así que no existe ningún lugar donde pudiera quedar una copia de tus fotos.
+- **No hay servidor ni respaldos.** Ningún servidor recibe tus fotos, así que no existe ningún lugar donde pudiera quedar una copia. En la versión en línea, GitHub solo entrega la página, como cualquier sitio web.
 - **No se instala**, no usa cookies y no guarda nada en el navegador.
 - **Solo escribe donde tú le indicas**: en la carpeta que elijas (el navegador te pide permiso) o en el ZIP que descargas.
 - **Nunca reemplaza un archivo.** Si ya existe uno con el mismo nombre, guarda una copia nueva, por ejemplo «IMG_0001 (2).jpg».
-- **Compruébalo tú:** desconecta internet antes de abrirla; funciona igual.
-- **Descárgala solo de este repositorio.** Una copia modificada por otra persona podría no ser segura. Cada versión en *Releases* incluye su huella SHA-256 para comprobarlo (ver [SECURITY.md](SECURITY.md)).
+- **Compruébalo tú:** desconéctate de internet y repara tus fotos: funciona igual. Si usas la versión en línea, desconéctate después de que cargue la página.
+- **Úsala solo desde este repositorio o desde [davidramosv.github.io/reparar-fotos](https://davidramosv.github.io/reparar-fotos/).** Una copia modificada por otra persona podría no ser segura. Cada versión en *Releases* incluye su huella SHA-256 para comprobarlo, y la versión en línea es el mismo archivo (ver [SECURITY.md](SECURITY.md)).
 - Las fotos reparadas **conservan la ubicación GPS** si la tenían. Tenlo en cuenta al compartirlas.
 
 ## Preguntas frecuentes
+
+<details>
+<summary><strong>¿Se suben mis fotos a GitHub?</strong></summary>
+
+No, en ninguna de las dos versiones. En la versión en línea, GitHub solo entrega la página, como cualquier sitio web, y puede registrar la visita (por ejemplo, tu dirección IP). Tus fotos nunca salen de tu navegador: la página tiene bloqueada cualquier conexión, así que no podría enviarlas aunque quisiera.
+
+Para comprobarlo, desconéctate de internet después de que cargue la página: la herramienta sigue funcionando y lo indica en la parte superior.
+
+</details>
+
+<details>
+<summary><strong>¿Conviene más usarla en línea o descargada?</strong></summary>
+
+Las dos procesan tus fotos igual, en tu computadora. Lo que cambia es esto:
+
+| | En línea | Descargada |
+|---|---|---|
+| Para empezar | Abres el enlace | Descargas un archivo |
+| Internet | Solo para cargar la página | Solo para descargarla |
+| Versión | Siempre la más reciente | La que descargaste; puedes comprobar su huella SHA-256 |
+| Qué ve GitHub | Cada visita, como en cualquier sitio web | Solo la descarga |
+
+La versión descargada es la opción más privada: GitHub solo ve la descarga y el archivo no cambia sin que lo sepas.
+
+</details>
 
 <details>
 <summary><strong>¿Por qué la miniatura se ve bien y la foto no?</strong></summary>
@@ -133,7 +160,7 @@ Chrome protege esas carpetas. Crea o elige una carpeta dentro de ellas, o usa la
 <details>
 <summary><strong>¿Funciona sin internet?</strong></summary>
 
-Sí. Puedes desconectarte antes de abrirla.
+Sí. La versión descargada funciona sin conexión desde el principio, y la versión en línea solo necesita internet para cargar la página.
 
 </details>
 
@@ -155,6 +182,8 @@ Sí, en varios lotes. Cada lote admite hasta 100 fotos de hasta 300 MB cada una.
 <summary><strong>¿Es gratis? ¿Puedo compartirla?</strong></summary>
 
 Sí. Es software libre con licencia MIT: puedes usarla, copiarla y compartirla.
+
+La forma más fácil de compartirla es enviar el enlace a la versión en línea, [davidramosv.github.io/reparar-fotos](https://davidramosv.github.io/reparar-fotos/). Así, quien lo abra usará siempre la versión original y más reciente, y no una copia que alguien pudo haber modificado.
 
 </details>
 

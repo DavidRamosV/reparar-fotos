@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Reparar fotos 1.0 · Copyright (c) 2026 David Ramos · SPDX-License-Identifier: MIT
+# Reparar fotos 1.1 · Copyright (c) 2026 David Ramos · SPDX-License-Identifier: MIT
 # Se ofrece tal cual, sin garantías de ningún tipo; el texto completo de la licencia está en el archivo LICENSE.
 # Si redistribuyes o modificas este código, conserva este aviso, como exige la licencia MIT.
 """

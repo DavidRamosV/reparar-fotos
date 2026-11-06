@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Reparar fotos 1.0 · Copyright (c) 2026 David Ramos · SPDX-License-Identifier: MIT
+<!-- Reparar fotos 1.1 · Copyright (c) 2026 David Ramos · SPDX-License-Identifier: MIT
      Se ofrece tal cual, sin garantías de ningún tipo; el texto completo de la licencia está en el archivo LICENSE.
      Si redistribuyes o modificas este código, conserva este aviso, como exige la licencia MIT. -->
 <html lang="es">
@@ -11,6 +11,30 @@
 <title>Reparar fotos</title>
 <!-- Ícono de la pestaña: SVG incrustado en el propio archivo, sin descargas. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGRlZnM+PHBhdGggaWQ9ImwiIGQ9Ik0tNC41OC0yQTUgNSAwIDEgMS00LjU4IDJILTEuMlYtMlpNMi0xLjlIMTMuMUExLjkgMS45IDAgMCAxIDEzLjEgMS45SDJaIi8+PC9kZWZzPjxnIHN0cm9rZT0iIzFiMjIzMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMyAzaDE0bDYgNnYyMEgzeiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xNyAzdjZoNiIgZmlsbD0ibm9uZSIvPjwvZz48ZyBmaWxsPSIjMWIyMjMwIj48Y2lyY2xlIGN4PSI4IiBjeT0iMTAiIHI9IjIiLz48cGF0aCBkPSJNNCAyNmw1LjUtOCAzLjUgNC41IDItMi41IDQgNnoiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjUgMTgpIHJvdGF0ZSgxMzUpIj48dXNlIGhyZWY9IiNsIiBmaWxsPSIjMWIyMjMwIiBzdHJva2U9IiMxYjIyMzAiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjx1c2UgaHJlZj0iI2wiIGZpbGw9IiM5YWEzYWUiLz48L2c+PC9zdmc+">
+<!-- Si otro sitio incrusta la página en un marco (iframe), la herramienta no se muestra: así nadie puede disfrazarla ni superponerle elementos engañosos. -->
+<style id="anti-marco">body { display: none !important; }</style>
+<script>
+(function () {
+	'use strict';
+	const estilo = document.getElementById('anti-marco');
+	if (window.self === window.top) {
+		estilo.remove();
+		return;
+	}
+	document.addEventListener('DOMContentLoaded', () => {
+		const enlace = document.createElement('a');
+		enlace.href = location.href;
+		enlace.target = '_blank';
+		enlace.rel = 'noopener';
+		enlace.textContent = 'Abrirla en una pestaña nueva';
+		const aviso = document.createElement('p');
+		aviso.className = 'en-marco';
+		aviso.append('Por seguridad, esta herramienta solo funciona en su propia pestaña. ', enlace);
+		document.body.replaceChildren(aviso);
+		estilo.remove();
+	});
+})();
+</script>
 <style>
 :root {
 	--fondo: #f4f6f9;
@@ -72,6 +96,14 @@ h1 { font-size: 26px; line-height: 1.2; margin: 0; letter-spacing: -0.01em; }
 .lema { margin: 8px 0 0; color: var(--tenue); max-width: 720px; }
 .local { display: inline-flex; align-items: center; gap: 8px; margin: 12px 0 0; padding: 6px 12px; border-radius: 999px; background: var(--ok-suave); color: var(--ok); font-size: 13.5px; font-weight: 600; }
 .local svg { width: 16px; height: 16px; flex: none; }
+.en-linea { max-width: 720px; margin: 10px 0 0; font-size: 13.5px; }
+.en-linea p { display: flex; align-items: flex-start; gap: 10px; margin: 0; padding: 10px 14px; border-radius: 12px; background: var(--panel); border: 1px solid var(--linea); color: var(--tenue); }
+.en-linea p.sin-red { background: var(--ok-suave); border-color: transparent; color: var(--texto); }
+.en-linea svg { width: 18px; height: 18px; flex: none; margin-top: 1px; color: var(--acento); }
+.en-linea .sin-red svg { color: var(--ok); }
+.en-linea strong { color: var(--texto); }
+.en-linea a, .en-marco a { color: var(--acento); font-weight: 600; }
+.en-marco { max-width: 560px; margin: 48px auto; padding: 0 16px; text-align: center; }
 .tarjeta { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); box-shadow: var(--sombra); margin: 18px 0; padding: 18px; }
 .tarjeta-cabeza { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
 .tarjeta-cabeza h2 { font-size: 17px; margin: 0; }
@@ -222,6 +254,8 @@ dialog.visor::backdrop { background: rgba(5, 8, 14, 0.72); }
 .pie { margin: 6px 0 20px; text-align: center; font-size: 12.5px; color: var(--tenue); }
 .pie p { margin: 2px 0; }
 .pie strong { color: var(--texto); font-weight: 600; }
+/* Sobre el fondo de la página, --acento-fuerte contrasta más que --acento, en modo claro y oscuro. */
+.pie a { color: var(--acento-fuerte); }
 @media (prefers-reduced-motion: reduce) {
 	*, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
 }
@@ -241,6 +275,10 @@ dialog.visor::backdrop { background: rgba(5, 8, 14, 0.72); }
 		</div>
 		<p class="lema">Recupera fotos JPG de cámara que se ven bien en miniatura, pero que al abrirlas muestran solo una franja y el resto en gris. Los archivos originales nunca se modifican.</p>
 		<p class="local"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Las fotos se procesan en tu computadora y nunca se suben a internet.</p>
+		<div class="en-linea" id="en-linea" role="status" hidden>
+			<p class="con-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9M12 3c-2.5 2.7-3.8 5.7-3.8 9s1.3 6.3 3.8 9"/></svg><span><strong>Versión en línea.</strong> La página se cargó desde internet, pero tus fotos se procesan aquí, en tu navegador: no se envían a ningún servidor, tampoco a GitHub, ni se guarda ninguna copia. Para comprobarlo, desconéctate de internet: la herramienta seguirá funcionando. <a href="https://github.com/DavidRamosV/reparar-fotos/releases/latest/download/reparar_fotos.html" target="_blank" rel="noopener">Descargar para usar sin internet</a></span></p>
+			<p class="sin-red" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/></svg><span><strong>Sin conexión a internet.</strong> La herramienta sigue funcionando, porque tus fotos se procesan solo en este navegador.</span></p>
+		</div>
 	</header>
 
 	<main>
@@ -372,7 +410,9 @@ dialog.visor::backdrop { background: rgba(5, 8, 14, 0.72); }
 		</section>
 	</main>
 	<footer class="pie">
-		<p>Reparar fotos 1.0 · Desarrollado por <strong>David Ramos</strong> · Software libre (licencia MIT)</p>
+		<!-- Los enlaces abren otra pestaña para no interrumpir una reparación en curso. -->
+		<p>Reparar fotos 1.1 · Desarrollado por <strong>David Ramos</strong> · Software libre (<a href="https://github.com/DavidRamosV/reparar-fotos/blob/main/LICENSE" target="_blank" rel="noopener">licencia MIT</a>)</p>
+		<p><a href="https://github.com/DavidRamosV/reparar-fotos#readme" target="_blank" rel="noopener">Instrucciones y preguntas frecuentes</a> · <a href="https://github.com/DavidRamosV/reparar-fotos#reportar-un-problema" target="_blank" rel="noopener">Reportar un problema</a></p>
 		<p>Se ofrece tal cual, sin garantías; conserva siempre tus archivos originales. Si compartes o reutilizas esta herramienta, se agradece dar crédito al autor.</p>
 	</footer>
 </div>
@@ -2817,7 +2857,23 @@ if (typeof module !== 'undefined' && module.exports) module.exports = MOTOR;
 		dibujarLote();
 	}
 
+	// Versión en línea (página servida por http o https): aviso de privacidad e indicador de conexión
+	function avisoEnLinea() {
+		if (location.protocol !== 'https:' && location.protocol !== 'http:') return;
+		const aviso = $('#en-linea');
+		const actualizar = () => {
+			const sinRed = !navigator.onLine;
+			aviso.querySelector('.con-red').hidden = sinRed;
+			aviso.querySelector('.sin-red').hidden = !sinRed;
+		};
+		aviso.hidden = false;
+		actualizar();
+		window.addEventListener('online', actualizar);
+		window.addEventListener('offline', actualizar);
+	}
+
 	iniciarPagina();
+	avisoEnLinea();
 })();
 </script>
 </body>

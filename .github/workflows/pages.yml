@@ -1,0 +1,54 @@
+# Publica la herramienta en GitHub Pages cada vez que se publica una versión (release).
+# El sitio es exactamente el archivo reparar_fotos.html adjunto a esa versión, con la misma huella SHA-256,
+# y solo se publica si es idéntico al del repositorio en la etiqueta de la versión.
+name: Publicar en GitHub Pages
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  preparar:
+    if: ${{ !github.event.release.prerelease }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Comprobar el archivo de la versión
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ETIQUETA: ${{ github.event.release.tag_name }}
+        run: |
+          gh release download "$ETIQUETA" --repo "$GITHUB_REPOSITORY" --pattern reparar_fotos.html --output adjunto.html
+          # El archivo adjunto debe ser idéntico al del repositorio en esa etiqueta
+          cmp adjunto.html reparar_fotos.html
+          mkdir sitio
+          cp adjunto.html sitio/index.html
+          sha256sum sitio/index.html
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: sitio
+
+  publicar:
+    needs: preparar
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
