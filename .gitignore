@@ -1,0 +1,16 @@
+# Fotos y resultados de pruebas: nunca se suben al repositorio (pueden llevar tu ubicación)
+*.jpg
+*.jpeg
+*.JPG
+*.JPEG
+*.heic
+*.HEIC
+*.zip
+recuperadas/
+Imágenes recuperadas/
+!docs/*.jpg
+
+# Python
+__pycache__/
+*.pyc
+.*.parcial

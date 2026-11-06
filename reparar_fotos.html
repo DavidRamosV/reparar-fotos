@@ -1,0 +1,2824 @@
+<!doctype html>
+<!-- Reparar fotos 1.0 · Copyright (c) 2026 David Ramos · SPDX-License-Identifier: MIT
+     Se ofrece tal cual, sin garantías de ningún tipo; el texto completo de la licencia está en el archivo LICENSE.
+     Si redistribuyes o modificas este código, conserva este aviso, como exige la licencia MIT. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Política de seguridad: sin acceso a la red; la página solo trabaja con los archivos que elija el usuario. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; worker-src blob:; style-src 'unsafe-inline'; img-src blob: data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Reparar fotos</title>
+<!-- Ícono de la pestaña: SVG incrustado en el propio archivo, sin descargas. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PGRlZnM+PHBhdGggaWQ9ImwiIGQ9Ik0tNC41OC0yQTUgNSAwIDEgMS00LjU4IDJILTEuMlYtMlpNMi0xLjlIMTMuMUExLjkgMS45IDAgMCAxIDEzLjEgMS45SDJaIi8+PC9kZWZzPjxnIHN0cm9rZT0iIzFiMjIzMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMyAzaDE0bDYgNnYyMEgzeiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0xNyAzdjZoNiIgZmlsbD0ibm9uZSIvPjwvZz48ZyBmaWxsPSIjMWIyMjMwIj48Y2lyY2xlIGN4PSI4IiBjeT0iMTAiIHI9IjIiLz48cGF0aCBkPSJNNCAyNmw1LjUtOCAzLjUgNC41IDItMi41IDQgNnoiLz48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjUgMTgpIHJvdGF0ZSgxMzUpIj48dXNlIGhyZWY9IiNsIiBmaWxsPSIjMWIyMjMwIiBzdHJva2U9IiMxYjIyMzAiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjx1c2UgaHJlZj0iI2wiIGZpbGw9IiM5YWEzYWUiLz48L2c+PC9zdmc+">
+<style>
+:root {
+	--fondo: #f4f6f9;
+	--panel: #ffffff;
+	--panel-2: #f8f9fb;
+	--texto: #1b2230;
+	--tenue: #5d6677;
+	--linea: #e2e6ed;
+	--acento: #2f6fed;
+	--acento-fuerte: #1f57c9;
+	--acento-suave: rgba(47, 111, 237, 0.12);
+	--ok: #1d9a55;
+	--ok-suave: rgba(29, 154, 85, 0.12);
+	--alerta: #b9770e;
+	--alerta-suave: rgba(214, 140, 18, 0.14);
+	--error: #d03b3b;
+	--error-suave: rgba(208, 59, 59, 0.12);
+	--neutro: #6b7280;
+	--neutro-suave: rgba(107, 114, 128, 0.14);
+	--sombra: 0 1px 2px rgba(16, 24, 40, 0.06), 0 6px 20px rgba(16, 24, 40, 0.06);
+	--radio: 14px;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--fondo: #0e1117;
+		--panel: #161a22;
+		--panel-2: #1b2029;
+		--texto: #e6e9ef;
+		--tenue: #9aa3b3;
+		--linea: #2a303c;
+		--acento: #5d8dff;
+		--acento-fuerte: #84a9ff;
+		--acento-suave: rgba(93, 141, 255, 0.16);
+		--ok: #3ccf7f;
+		--ok-suave: rgba(60, 207, 127, 0.14);
+		--alerta: #f0b442;
+		--alerta-suave: rgba(240, 180, 66, 0.14);
+		--error: #ff6b6b;
+		--error-suave: rgba(255, 107, 107, 0.14);
+		--neutro: #9aa3b3;
+		--neutro-suave: rgba(154, 163, 179, 0.16);
+		--sombra: none;
+	}
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+	background: var(--fondo);
+	color: var(--texto);
+	font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+	padding-bottom: 96px;
+}
+button, input { font: inherit; color: inherit; }
+.contenedor { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+.cabecera { padding: 28px 0 8px; }
+.marca { display: flex; align-items: center; gap: 12px; }
+.marca svg { width: 34px; height: 34px; color: var(--acento); flex: none; }
+h1 { font-size: 26px; line-height: 1.2; margin: 0; letter-spacing: -0.01em; }
+.lema { margin: 8px 0 0; color: var(--tenue); max-width: 720px; }
+.local { display: inline-flex; align-items: center; gap: 8px; margin: 12px 0 0; padding: 6px 12px; border-radius: 999px; background: var(--ok-suave); color: var(--ok); font-size: 13.5px; font-weight: 600; }
+.local svg { width: 16px; height: 16px; flex: none; }
+.tarjeta { background: var(--panel); border: 1px solid var(--linea); border-radius: var(--radio); box-shadow: var(--sombra); margin: 18px 0; padding: 18px; }
+.tarjeta-cabeza { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.tarjeta-cabeza h2 { font-size: 17px; margin: 0; }
+.paso { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--acento-suave); color: var(--acento); font-weight: 700; font-size: 14px; flex: none; }
+.contador { margin-left: auto; color: var(--tenue); font-variant-numeric: tabular-nums; font-size: 14px; }
+.muted { color: var(--tenue); }
+.pequeno { font-size: 13.5px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--linea); background: var(--panel-2); border-radius: 10px; padding: 8px 14px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.15s, border-color 0.15s, transform 0.1s; }
+.btn:hover:not(:disabled) { border-color: var(--acento); }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn svg { width: 16px; height: 16px; }
+.btn.primario { background: var(--acento); border-color: var(--acento); color: #fff; }
+.btn.primario:hover:not(:disabled) { background: var(--acento-fuerte); border-color: var(--acento-fuerte); }
+.btn.peligro { color: var(--error); }
+.btn.peligro:hover:not(:disabled) { border-color: var(--error); }
+.btn.texto { background: transparent; border-color: transparent; color: var(--tenue); }
+.btn.grande { padding: 12px 22px; font-size: 15.5px; border-radius: 12px; }
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
+.zona { border: 2px dashed var(--linea); border-radius: 12px; padding: 14px; min-height: 180px; transition: border-color 0.15s, background 0.15s; }
+.zona.encima { border-color: var(--acento); background: var(--acento-suave); }
+.zona-vacia { display: grid; place-items: center; text-align: center; gap: 6px; padding: 28px 8px; }
+.zona-vacia svg { width: 44px; height: 44px; color: var(--tenue); }
+.zona-vacia p { margin: 0; }
+.rejilla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.foto { min-width: 0; }
+.foto-btn { display: block; position: relative; width: 100%; padding: 0; border: 0; background: none; border-radius: 10px; cursor: pointer; }
+.marco { display: block; aspect-ratio: 3 / 2; border-radius: 10px; overflow: hidden; background: var(--panel-2); border: 1px solid var(--linea); }
+.marco img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto-btn[aria-pressed="true"] .marco { outline: 3px solid var(--acento); outline-offset: 2px; }
+.check { position: absolute; top: 8px; left: 8px; width: 24px; height: 24px; border-radius: 7px; border: 2px solid #fff; background: rgba(0, 0, 0, 0.28); display: grid; place-items: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35); }
+.check svg { width: 15px; height: 15px; color: #fff; opacity: 0; }
+.foto-btn[aria-pressed="true"] .check { background: var(--acento); border-color: var(--acento); }
+.foto-btn[aria-pressed="true"] .check svg { opacity: 1; }
+.estado-icono { position: absolute; right: 8px; top: 8px; width: 26px; height: 26px; border-radius: 50%; display: none; place-items: center; color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35); }
+.estado-icono svg { width: 15px; height: 15px; }
+.foto[data-estado="procesando"] .estado-icono { display: grid; background: var(--acento); }
+.foto[data-estado="procesando"] .marco img { filter: saturate(0.6) brightness(0.92); }
+.foto[data-estado="reparada"] .estado-icono { display: grid; background: var(--ok); }
+.foto[data-estado="revisar"] .estado-icono { display: grid; background: var(--alerta); }
+.foto[data-estado="error"] .estado-icono { display: grid; background: var(--error); }
+.foto[data-estado="sindano"] .estado-icono { display: grid; background: var(--neutro); }
+.foto[data-estado="pendiente-proc"] .marco { opacity: 0.55; }
+.giro { width: 15px; height: 15px; border: 2px solid rgba(255, 255, 255, 0.4); border-top-color: #fff; border-radius: 50%; animation: girar 0.8s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.foto-nombre { display: block; margin-top: 7px; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.foto-meta { display: block; font-size: 12px; color: var(--tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.barra-herr { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.opciones { display: grid; gap: 12px; }
+.opcion { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--linea); border-radius: 12px; cursor: pointer; background: var(--panel-2); }
+.opcion:has(input:checked) { border-color: var(--acento); background: var(--acento-suave); }
+.opcion input[type="radio"] { margin-top: 3px; accent-color: var(--acento); width: 17px; height: 17px; flex: none; }
+.opcion .titulo { display: block; font-weight: 600; }
+.opcion .desc { display: block; font-size: 13.5px; color: var(--tenue); margin-top: 2px; }
+.fila-campos { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 10px; }
+.campo { border: 1px solid var(--linea); background: var(--panel); border-radius: 10px; padding: 8px 12px; min-width: 0; width: 240px; max-width: 100%; }
+.campo:focus { outline: 3px solid var(--acento-suave); border-color: var(--acento); }
+.campo.malo { border-color: var(--error); }
+.carpeta-elegida { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 6px 12px; border-radius: 10px; background: var(--panel); border: 1px solid var(--linea); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.carpeta-elegida svg { width: 16px; height: 16px; color: var(--acento); flex: none; }
+.arbol { margin: 10px 0 0; padding: 10px 14px; border-radius: 10px; background: var(--panel); border: 1px solid var(--linea); font-size: 13.5px; line-height: 1.7; }
+.arbol .rama { padding-left: 18px; color: var(--tenue); }
+.punto { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.punto.ok { background: var(--ok); }
+.punto.alerta { background: var(--alerta); }
+.punto.error { background: var(--error); }
+.punto.neutro { background: var(--neutro); }
+.nota { font-size: 13.5px; color: var(--tenue); margin: 10px 0 0; }
+.nota.alerta { color: var(--alerta); }
+.ejemplo { font-size: 13.5px; color: var(--tenue); }
+.ejemplo code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; background: var(--panel); border: 1px solid var(--linea); padding: 1px 6px; border-radius: 6px; color: var(--texto); }
+.progreso-cabeza { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.progreso-cabeza strong { font-size: 17px; }
+.pct { font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: var(--acento); }
+.barra { height: 14px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--linea); overflow: hidden; margin: 10px 0 12px; }
+.barra > div { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, var(--acento), #7aa2ff); transition: width 0.35s ease; position: relative; overflow: hidden; }
+.barra > div::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent); animation: brillo 1.4s linear infinite; }
+@keyframes brillo { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.datos-prog { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.dato { background: var(--panel-2); border: 1px solid var(--linea); border-radius: 12px; padding: 10px 12px; }
+.dato .valor { display: block; font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.dato .etiqueta { font-size: 12.5px; color: var(--tenue); }
+.ahora { margin: 12px 0 0; font-size: 13.5px; color: var(--tenue); overflow-wrap: anywhere; }
+.pestanas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.pestana { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--linea); background: var(--panel-2); border-radius: 999px; padding: 7px 14px; cursor: pointer; font-weight: 600; font-size: 14px; }
+.pestana[aria-selected="true"] { background: var(--texto); color: var(--panel); border-color: var(--texto); }
+.pestana .num { font-variant-numeric: tabular-nums; opacity: 0.8; }
+.explica { margin: -4px 0 14px; font-size: 13.5px; color: var(--tenue); }
+.chip { position: absolute; left: 8px; bottom: 8px; font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px; color: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+.chip.ok { background: var(--ok); }
+.chip.alerta { background: var(--alerta); }
+.chip.error { background: var(--error); }
+.chip.neutro { background: var(--neutro); }
+.vacio-res { padding: 26px; text-align: center; color: var(--tenue); border: 1px dashed var(--linea); border-radius: 12px; }
+.acciones-res { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.accion-fija { position: fixed; left: 0; right: 0; bottom: 0; background: color-mix(in srgb, var(--panel) 92%, transparent); backdrop-filter: blur(8px); border-top: 1px solid var(--linea); z-index: 5; }
+.accion-fija .contenedor { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; padding-bottom: 12px; }
+.accion-fija .resumen { color: var(--tenue); font-size: 14px; }
+dialog.visor { width: min(1280px, 96vw); height: min(900px, 94vh); max-width: none; max-height: none; padding: 0; border: 1px solid var(--linea); border-radius: 16px; background: var(--panel); color: var(--texto); overflow: hidden; }
+dialog.visor::backdrop { background: rgba(5, 8, 14, 0.72); }
+.visor-marco { display: grid; grid-template-rows: auto 1fr; height: 100%; }
+.visor-barra { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--linea); flex-wrap: wrap; }
+.visor-titulo { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.visor-titulo strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.visor-titulo .chip { position: static; box-shadow: none; }
+.visor-acciones { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.interruptor { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.interruptor input { accent-color: var(--alerta); width: 16px; height: 16px; }
+.visor-cuerpo { display: grid; grid-template-columns: 1fr 320px; min-height: 0; }
+.lienzo { background: #0b0d12; overflow: auto; display: flex; gap: 12px; padding: 12px; align-items: flex-start; justify-content: center; min-height: 0; }
+.lienzo figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; flex: 1; }
+.lienzo figcaption { color: #c9cfda; font-size: 13px; }
+.envoltura { position: relative; display: inline-block; line-height: 0; }
+.lienzo img { display: block; max-width: 100%; max-height: calc(min(900px, 94vh) - 110px); object-fit: contain; cursor: zoom-in; }
+.lienzo.real { justify-content: flex-start; }
+.lienzo.real img { max-width: none; max-height: none; cursor: zoom-out; }
+.lienzo.real figure { flex: none; }
+.franja { position: absolute; left: 0; right: 0; border: 2px solid #ffb020; background: rgba(255, 176, 32, 0.18); pointer-events: none; display: none; }
+.lienzo.con-franja .franja { display: block; }
+.visor-info { border-left: 1px solid var(--linea); padding: 14px; overflow: auto; font-size: 14px; }
+.visor-info h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--tenue); margin: 14px 0 6px; }
+.visor-info h3:first-child { margin-top: 0; }
+.visor-info ul { margin: 0; padding-left: 18px; }
+.visor-info li { margin: 3px 0; }
+.visor-info .ruta { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; overflow-wrap: anywhere; background: var(--panel-2); border: 1px solid var(--linea); border-radius: 8px; padding: 6px 8px; }
+.avisos-lista li { color: var(--alerta); }
+@media (max-width: 860px) {
+	.visor-cuerpo { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+	.visor-info { border-left: 0; border-top: 1px solid var(--linea); max-height: 38vh; }
+	.lienzo { flex-direction: column; align-items: center; }
+}
+.fin { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: rgba(5, 8, 14, 0.55); }
+.fin[hidden], [hidden] { display: none !important; }
+.fin canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fin-tarjeta { position: relative; background: var(--panel); border: 1px solid var(--linea); border-radius: 20px; padding: 28px 28px 22px; width: min(440px, calc(100vw - 32px)); text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35); animation: aparecer 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3); }
+@keyframes aparecer { from { transform: scale(0.85) translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+.palomita { width: 86px; height: 86px; margin: 0 auto 8px; display: block; }
+.palomita circle { fill: none; stroke: var(--ok); stroke-width: 3; stroke-dasharray: 160; stroke-dashoffset: 160; animation: trazo 0.7s ease-out forwards; }
+.palomita path { fill: none; stroke: var(--ok); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 48; stroke-dashoffset: 48; animation: trazo 0.45s 0.6s ease-out forwards; }
+@keyframes trazo { to { stroke-dashoffset: 0; } }
+.fin-tarjeta h2 { margin: 4px 0 6px; font-size: 24px; }
+.fin-conteo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 14px 0 18px; text-align: left; }
+.fin-conteo div { background: var(--panel-2); border: 1px solid var(--linea); border-radius: 10px; padding: 8px 10px; font-size: 13.5px; }
+.fin-conteo strong { font-size: 18px; margin-right: 6px; font-variant-numeric: tabular-nums; }
+.toasts { position: fixed; right: 16px; bottom: 86px; display: grid; gap: 8px; z-index: 30; max-width: min(420px, calc(100vw - 32px)); }
+.toast { background: var(--texto); color: var(--panel); padding: 10px 14px; border-radius: 10px; font-size: 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); animation: aparecer 0.25s ease-out; }
+.oculto { display: none !important; }
+.pie { margin: 6px 0 20px; text-align: center; font-size: 12.5px; color: var(--tenue); }
+.pie p { margin: 2px 0; }
+.pie strong { color: var(--texto); font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+}
+@media (max-width: 560px) {
+	.rejilla { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+	.accion-fija .resumen { display: none; }
+	.accion-fija .btn.grande { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="contenedor">
+	<header class="cabecera">
+		<div class="marca">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 9"/></svg>
+			<h1>Reparar fotos</h1>
+		</div>
+		<p class="lema">Recupera fotos JPG de cámara que se ven bien en miniatura, pero que al abrirlas muestran solo una franja y el resto en gris. Los archivos originales nunca se modifican.</p>
+		<p class="local"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Las fotos se procesan en tu computadora y nunca se suben a internet.</p>
+	</header>
+
+	<main>
+		<section class="tarjeta" aria-labelledby="t-fotos">
+			<div class="tarjeta-cabeza">
+				<span class="paso">1</span>
+				<h2 id="t-fotos">Fotos del lote</h2>
+				<span class="contador" id="cuenta-lote">0 de 100</span>
+			</div>
+			<div class="zona" id="zona">
+				<input type="file" id="entrada" accept=".jpg,.jpeg,image/jpeg" multiple hidden>
+				<div class="zona-vacia" id="zona-vacia">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+					<p><strong>Arrastra tus fotos aquí</strong></p>
+					<button class="btn primario" type="button" id="btn-elegir">Elegir fotos</button>
+					<p class="muted pequeno">Archivos JPG · hasta 100 por lote</p>
+				</div>
+				<ul class="rejilla oculto" id="rejilla" aria-label="Fotos del lote"></ul>
+			</div>
+			<div class="barra-herr oculto" id="herr-lote">
+				<button class="btn" type="button" id="btn-mas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Agregar fotos</button>
+				<button class="btn" type="button" id="btn-sel">Seleccionar todas</button>
+				<button class="btn peligro" type="button" id="btn-quitar" disabled>Quitar seleccionadas</button>
+				<button class="btn texto" type="button" id="btn-vaciar">Vaciar lote</button>
+			</div>
+		</section>
+
+		<section class="tarjeta" aria-labelledby="t-guardar">
+			<div class="tarjeta-cabeza">
+				<span class="paso">2</span>
+				<h2 id="t-guardar">Dónde guardar</h2>
+			</div>
+			<div class="opciones" role="radiogroup" aria-label="Forma de guardar">
+				<label class="opcion" id="op-carpeta">
+					<input type="radio" name="guardar" value="carpeta">
+					<span>
+						<span class="titulo">En una carpeta de tu computadora</span>
+						<span class="desc" id="desc-carpeta">El navegador te pedirá permiso para guardar en la carpeta que elijas. Si Chrome no permite usar una carpeta como Descargas o Documentos, elige una subcarpeta o la carpeta Imágenes.</span>
+						<span class="fila-campos">
+							<button class="btn" type="button" id="btn-carpeta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Elegir carpeta…</button>
+							<span class="carpeta-elegida oculto" id="carpeta-elegida"></span>
+						</span>
+					</span>
+				</label>
+				<label class="opcion">
+					<input type="radio" name="guardar" value="zip">
+					<span>
+						<span class="titulo">Descargar un ZIP</span>
+						<span class="desc">Compatible con cualquier navegador. Al descomprimirlo, cada foto conserva su fecha de captura como fecha del archivo.</span>
+					</span>
+				</label>
+			</div>
+			<div class="fila-campos">
+				<label for="nombre-carpeta" class="pequeno"><strong>Nombre de la carpeta de resultados</strong></label>
+				<input class="campo" id="nombre-carpeta" value="Imágenes recuperadas" maxlength="80" autocomplete="off">
+			</div>
+			<div class="arbol" aria-label="Carpetas que se crean">
+				<div><span id="arbol-raiz">Imágenes recuperadas</span>/</div>
+				<div class="rama"><span class="punto ok"></span>Reparadas</div>
+				<div class="rama"><span class="punto alerta"></span>Por revisar</div>
+				<div class="rama"><span class="punto error"></span>Sin reparar <span class="muted">(copia del original, para intentarlo con otra herramienta)</span></div>
+				<div class="rama"><span class="punto neutro"></span>reporte.txt <span class="muted">(detalle de cada foto)</span></div>
+			</div>
+			<p class="nota" id="nota-fechas">Al guardar en una carpeta, el archivo mostrará la fecha de hoy porque el navegador no puede modificarla. La fecha de captura se conserva dentro de la foto, y es la que usan las galerías y las apps de fotos.</p>
+		</section>
+
+		<section class="tarjeta" aria-labelledby="t-nombres">
+			<div class="tarjeta-cabeza">
+				<span class="paso">3</span>
+				<h2 id="t-nombres">Nombres de las fotos</h2>
+			</div>
+			<div class="opciones" role="radiogroup" aria-label="Nombres">
+				<label class="opcion">
+					<input type="radio" name="nombre" value="original" checked>
+					<span>
+						<span class="titulo">Conservar el nombre original</span>
+						<span class="desc">Ningún archivo se sobrescribe: si ya existe uno con el mismo nombre (por ejemplo, el original), se guarda como «IMG_0001 (2).jpg».</span>
+					</span>
+				</label>
+				<label class="opcion">
+					<input type="radio" name="nombre" value="numero">
+					<span>
+						<span class="titulo">Nombre con número</span>
+						<span class="desc">Escribe un prefijo; el número se agrega automáticamente, desde 1 y omitiendo los que ya existan. Las fotos sin reparar conservan su nombre original.</span>
+						<span class="fila-campos">
+							<input class="campo" id="prefijo" value="Foto" maxlength="60" autocomplete="off" aria-label="Prefijo del nombre">
+							<span class="ejemplo" id="ejemplo-nombre">Ejemplo: <code>Foto_1.jpg</code>, <code>Foto_2.jpg</code>…</span>
+						</span>
+					</span>
+				</label>
+			</div>
+		</section>
+
+		<section class="tarjeta oculto" id="progreso" aria-labelledby="t-prog">
+			<div class="progreso-cabeza">
+				<strong id="t-prog">Reparando…</strong>
+				<span class="pct" id="prog-pct">0 %</span>
+			</div>
+			<div class="barra" role="progressbar" aria-labelledby="t-prog" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="prog-rol"><div id="prog-barra"></div></div>
+			<div class="datos-prog">
+				<div class="dato"><span class="valor" id="prog-va">0</span><span class="etiqueta">foto actual</span></div>
+				<div class="dato"><span class="valor" id="prog-hechas">0</span><span class="etiqueta">completadas</span></div>
+				<div class="dato"><span class="valor" id="prog-faltan">0</span><span class="etiqueta">pendientes</span></div>
+				<div class="dato"><span class="valor" id="prog-eta">—</span><span class="etiqueta">tiempo restante estimado</span></div>
+			</div>
+			<p class="ahora" id="prog-ahora" aria-live="polite"></p>
+			<div class="acciones-res"><button class="btn" type="button" id="btn-detener">Detener después de las fotos en proceso</button></div>
+		</section>
+
+		<section class="tarjeta oculto" id="resultados" aria-labelledby="t-res">
+			<div class="tarjeta-cabeza">
+				<span class="paso">✓</span>
+				<h2 id="t-res">Resultados</h2>
+				<span class="contador" id="res-destino"></span>
+			</div>
+			<div class="pestanas" role="tablist" id="pestanas">
+				<button class="pestana" role="tab" data-p="reparada" aria-selected="true"><span class="punto ok"></span>Reparadas <span class="num" id="n-reparada">0</span></button>
+				<button class="pestana" role="tab" data-p="revisar" aria-selected="false"><span class="punto alerta"></span>Por revisar <span class="num" id="n-revisar">0</span></button>
+				<button class="pestana" role="tab" data-p="sinReparar" aria-selected="false"><span class="punto error"></span>Sin reparar <span class="num" id="n-error">0</span></button>
+				<button class="pestana" role="tab" data-p="sinDano" aria-selected="false"><span class="punto neutro"></span>Sin daño <span class="num" id="n-sindano">0</span></button>
+			</div>
+			<p class="explica" id="explica"></p>
+			<ul class="rejilla" id="rejilla-res" aria-label="Fotos del resultado"></ul>
+			<div class="acciones-res">
+				<button class="btn" type="button" id="btn-reintentar" disabled>Crear un lote con las fotos sin reparar</button>
+				<button class="btn" type="button" id="btn-zip-otra" hidden>Descargar el ZIP de nuevo</button>
+				<button class="btn texto" type="button" id="btn-nuevo">Nuevo lote</button>
+			</div>
+		</section>
+	</main>
+	<footer class="pie">
+		<p>Reparar fotos 1.0 · Desarrollado por <strong>David Ramos</strong> · Software libre (licencia MIT)</p>
+		<p>Se ofrece tal cual, sin garantías; conserva siempre tus archivos originales. Si compartes o reutilizas esta herramienta, se agradece dar crédito al autor.</p>
+	</footer>
+</div>
+
+<div class="accion-fija">
+	<div class="contenedor">
+		<span class="resumen" id="resumen-accion">Agrega fotos para empezar.</span>
+		<button class="btn primario grande" type="button" id="btn-reparar" disabled>Reparar fotos</button>
+	</div>
+</div>
+
+<dialog class="visor" id="visor" aria-labelledby="visor-nombre">
+	<div class="visor-marco">
+		<div class="visor-barra">
+			<div class="visor-titulo"><span class="chip" id="visor-chip"></span><strong id="visor-nombre"></strong><span class="muted pequeno" id="visor-pos"></span></div>
+			<div class="visor-acciones">
+				<label class="interruptor" id="visor-franja-et"><input type="checkbox" id="visor-franja">Resaltar zona reconstruida</label>
+				<button class="btn" type="button" id="visor-zoom">Tamaño real</button>
+				<button class="btn" type="button" id="visor-ant" aria-label="Foto anterior">‹</button>
+				<button class="btn" type="button" id="visor-sig" aria-label="Foto siguiente">›</button>
+				<button class="btn" type="button" id="visor-cerrar" aria-label="Cerrar">✕</button>
+			</div>
+		</div>
+		<div class="visor-cuerpo">
+			<div class="lienzo" id="lienzo"></div>
+			<aside class="visor-info" id="visor-info"></aside>
+		</div>
+	</div>
+</dialog>
+
+<div class="fin" id="fin" hidden>
+	<canvas id="confeti"></canvas>
+	<div class="fin-tarjeta" role="dialog" aria-modal="true" aria-labelledby="fin-titulo">
+		<svg class="palomita" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
+		<h2 id="fin-titulo">Proceso completado</h2>
+		<p class="muted" id="fin-texto"></p>
+		<div class="fin-conteo" id="fin-conteo"></div>
+		<button class="btn primario grande" type="button" id="fin-ver">Ver resultados</button>
+	</div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script id="motor">
+/* Motor de reparación. Trabaja solo con los bytes de la foto: no usa red ni archivos. */
+var MOTOR = (function () {
+	'use strict';
+	const ALINEACION = 4096; // el daño llega en bloques; sus bordes se redondean a este tamaño
+	const UNION = 8192; // marcas de daño separadas por menos que esto forman una sola zona
+	const MAX_PIXELES = 250e6; // ninguna cámara llega a esto; protege de archivos con dimensiones falsas
+	const ZZ = new Int32Array([0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5, 12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28,
+		35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51, 58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63]);
+	const CS = new Float64Array(64);
+	for (let f = 0; f < 8; f++) for (let x = 0; x < 8; x++) CS[f * 8 + x] = (f === 0 ? Math.SQRT1_2 : 1) * 0.5 * Math.cos(((2 * x + 1) * f * Math.PI) / 16);
+	const TMP = new Float64Array(64);
+
+	class NoReparable extends Error {}
+
+	const u16be = (d, i) => (d[i] << 8) | d[i + 1];
+	const bitLength = (x) => (x ? 32 - Math.clz32(x) : 0);
+	const leerBits = (u, pos, s) => {
+		const by = pos >>> 3;
+		return ((((u[by] << 16) | (u[by + 1] << 8) | u[by + 2]) >>> (8 - (pos & 7))) & 0xffff) >>> (16 - s);
+	};
+	// redondeo al par más cercano en los empates, igual que la versión en Python
+	const redondear = (x) => {
+		const r = Math.round(x);
+		return Math.abs(x % 1) === 0.5 && r % 2 !== 0 ? r - 1 : r;
+	};
+	const miles = (n) => Math.round(n).toLocaleString('es-MX');
+
+	function mediana(x) {
+		const a = Float64Array.from(x).sort();
+		const n = a.length;
+		if (!n) return 0;
+		return n % 2 ? a[(n - 1) / 2] : (a[n / 2 - 1] + a[n / 2]) / 2;
+	}
+
+	// promedio sin el 25 % más alto ni el 25 % más bajo
+	function recortada(x) {
+		const a = Float64Array.from(x).sort();
+		const n = a.length;
+		if (!n) return 0;
+		if (n <= 3) return a.reduce((t, v) => t + v, 0) / n;
+		const q = Math.floor(n / 4);
+		let t = 0;
+		for (let k = q; k < n - q; k++) t += a[k];
+		return t / (n - 2 * q);
+	}
+
+	const mcd = (a, b) => (b ? mcd(b, a % b) : a);
+	// paso de muestreo que no sea múltiplo de los bloques por grupo, para no saltarse canales
+	function pasoParejo(paso, ns) {
+		paso = Math.max(1, paso);
+		while (mcd(paso, ns) !== 1) paso++;
+		return paso;
+	}
+
+	function muestra(n, k, ns) {
+		const a = Math.min(64, Math.floor(n / 10)), b = n - Math.min(64, Math.floor(n / 10));
+		const out = [];
+		if (b - a <= k) {
+			for (let i = a; i < b; i++) out.push(i);
+			return out;
+		}
+		const paso = pasoParejo(Math.floor((b - a) / k), ns);
+		for (let i = a; i < b && out.length < k; i += paso) out.push(i);
+		return out;
+	}
+
+	function tablaHuffman(cuentas, simbolos) {
+		const S = new Uint8Array(65536), L = new Uint8Array(65536), codigos = new Map();
+		let code = 0, k = 0;
+		for (let n = 1; n <= 16; n++) {
+			for (let j = 0; j < cuentas[n - 1]; j++) {
+				const s = simbolos[k++];
+				codigos.set(s, [code, n]);
+				const a = code << (16 - n), ancho = 1 << (16 - n);
+				S.fill(s, a, a + ancho);
+				L.fill(n, a, a + ancho);
+				code++;
+			}
+			code <<= 1;
+		}
+		return { S, L, codigos };
+	}
+
+	function lectorTiff(d, base) {
+		const le = d[base] === 0x49;
+		const u16 = (o) => (le ? d[base + o] | (d[base + o + 1] << 8) : (d[base + o] << 8) | d[base + o + 1]);
+		const u32 = (o) =>
+			(le
+				? d[base + o] | (d[base + o + 1] << 8) | (d[base + o + 2] << 16) | (d[base + o + 3] << 24)
+				: (d[base + o] << 24) | (d[base + o + 1] << 16) | (d[base + o + 2] << 8) | d[base + o + 3]) >>> 0;
+		const ifd = (o) => {
+			const n = u16(o);
+			if (n > 2000) throw new Error('IFD inválido');
+			const tags = new Map();
+			for (let k = 0; k < n; k++) {
+				const p = o + 2 + 12 * k;
+				tags.set(u16(p), { tipo: u16(p + 2), n: u32(p + 4), vo: p + 8 });
+			}
+			return { tags, sig: u32(o + 2 + 12 * n) };
+		};
+		const txt = (tags, tag) => {
+			const t = tags.get(tag);
+			if (!t) return null;
+			const p = t.n <= 4 ? t.vo : u32(t.vo);
+			let out = '';
+			for (let k = 0; k < t.n && k < 256; k++) {
+				const c = d[base + p + k];
+				if (!c) break;
+				out += String.fromCharCode(c);
+			}
+			return out.trim();
+		};
+		const entero = (tags, tag) => {
+			const t = tags.get(tag);
+			return t ? (t.tipo === 4 ? u32(t.vo) : u16(t.vo)) : null;
+		};
+		return { le, u16, u32, ifd, txt, entero };
+	}
+
+	// Fecha de captura (con zona horaria si la trae) y miniatura del Exif
+	function leerExif(d, base, fin) {
+		const L = lectorTiff(d, base);
+		const { tags: i0, sig } = L.ifd(L.u32(4));
+		let fecha = null;
+		if (i0.has(0x8769)) {
+			const { tags: ex } = L.ifd(L.u32(i0.get(0x8769).vo));
+			const f = L.txt(ex, 0x9003);
+			const m = f && /^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)$/.exec(f);
+			if (m) {
+				const local = m.slice(1).map(Number);
+				const ss = L.txt(ex, 0x9291);
+				const ms = ss && /^\d+$/.test(ss) ? Math.round(Number('0.' + ss) * 1000) : 0;
+				const off = L.txt(ex, 0x9011);
+				let epoca;
+				if (off && /^[+-]\d\d:\d\d$/.test(off)) {
+					const minutos = (off[0] === '-' ? -1 : 1) * (Number(off.slice(1, 3)) * 60 + Number(off.slice(4, 6)));
+					epoca = Date.UTC(local[0], local[1] - 1, local[2], local[3], local[4], local[5], ms) - minutos * 60000;
+				} else {
+					epoca = new Date(local[0], local[1] - 1, local[2], local[3], local[4], local[5], ms).getTime();
+				}
+				fecha = { ms: epoca, local };
+			}
+		}
+		let mini = null;
+		if (sig) {
+			const { tags: i1 } = L.ifd(sig);
+			const o = L.entero(i1, 0x201), n = L.entero(i1, 0x202);
+			if (o != null && n && base + o + n <= fin) mini = d.subarray(base + o, base + o + n);
+		}
+		return { fecha, mini };
+	}
+
+	class Foto {
+		constructor(d, permitirReinicios) {
+			this.d = d;
+			if (d.length < 4 || d[0] !== 0xff || d[1] !== 0xd8) throw new NoReparable('el archivo no es un JPG válido');
+			let i = 2;
+			this.segs = [];
+			for (;;) {
+				if (i + 4 > d.length || d[i] !== 0xff) throw new NoReparable('el encabezado del archivo está dañado');
+				const m = d[i + 1];
+				if (m === 0xff) {
+					i++;
+					continue;
+				}
+				const largo = u16be(d, i + 2);
+				this.segs.push({ i, m, n: 2 + largo });
+				i += 2 + largo;
+				if (m === 0xda) break;
+			}
+			if (i > d.length) throw new NoReparable('el encabezado del archivo está incompleto');
+			this.iniDatos = i;
+			this.qt = {};
+			this.comps = [];
+			const huff = {};
+			const sos = [];
+			let dri = 0;
+			let sof = null;
+			for (const s of this.segs) {
+				const p0 = s.i + 4, fin = s.i + s.n, m = s.m;
+				if (m === 0xdb) {
+					let p = p0;
+					while (p < fin) {
+						const pq = d[p] >> 4, tq = d[p] & 15;
+						p++;
+						const t = new Int32Array(64);
+						for (let k = 0; k < 64; k++) t[k] = pq ? u16be(d, p + 2 * k) : d[p + k];
+						this.qt[tq] = t;
+						p += pq ? 128 : 64;
+					}
+				} else if (m === 0xc0 || m === 0xc1) {
+					if (d[p0] !== 8) throw new NoReparable('la profundidad de color no es compatible');
+					this.alto = u16be(d, p0 + 1);
+					this.ancho = u16be(d, p0 + 3);
+					for (let k = 0; k < d[p0 + 5]; k++) {
+						this.comps.push({ id: d[p0 + 6 + 3 * k], h: d[p0 + 7 + 3 * k] >> 4, v: d[p0 + 7 + 3 * k] & 15, tq: d[p0 + 8 + 3 * k] });
+					}
+					sof = m;
+				} else if ([0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].includes(m)) {
+					throw new NoReparable('es un JPG progresivo o con otra codificación, que este método no admite');
+				} else if (m === 0xc4) {
+					let p = p0;
+					while (p < fin) {
+						const tc = d[p] >> 4, th = d[p] & 15;
+						const cuentas = Array.from(d.subarray(p + 1, p + 17));
+						p += 17;
+						const total = cuentas.reduce((a, b) => a + b, 0);
+						huff[tc * 16 + th] = tablaHuffman(cuentas, d.subarray(p, p + total));
+						p += total;
+					}
+				} else if (m === 0xdd) {
+					dri = u16be(d, p0);
+				} else if (m === 0xda) {
+					for (let k = 0; k < d[p0]; k++) sos.push([d[p0 + 1 + 2 * k], d[p0 + 2 + 2 * k] >> 4, d[p0 + 2 + 2 * k] & 15]);
+				}
+			}
+			if (sof === null) throw new NoReparable('el archivo no indica las dimensiones de la imagen');
+			if (this.comps.length !== 3) throw new NoReparable('este método solo admite fotos a color');
+			if (dri && !permitirReinicios) throw new NoReparable('usa marcadores de reinicio, que este método no admite');
+			if (sos.length !== 3) throw new NoReparable('usa varios escaneos, que este método no admite');
+			this.dri = dri;
+			this.tab = huff;
+			this.hmax = Math.max(...this.comps.map((c) => c.h));
+			this.vmax = Math.max(...this.comps.map((c) => c.v));
+			if (!this.hmax || !this.vmax || !this.ancho || !this.alto) throw new NoReparable('el encabezado del archivo está dañado');
+			if (this.ancho * this.alto > MAX_PIXELES) throw new NoReparable('indica más de 250 megapíxeles, una dimensión que no corresponde a una foto de cámara');
+			this.porFila = Math.ceil(this.ancho / (8 * this.hmax));
+			this.filas = Math.ceil(this.alto / (8 * this.vmax));
+			this.slots = [];
+			for (const [cs, td, ta] of sos) {
+				const c = this.comps.findIndex((cc) => cc.id === cs);
+				if (c < 0 || !huff[td] || !huff[16 + ta]) throw new NoReparable('faltan las tablas de Huffman');
+				if (!this.qt[this.comps[c].tq]) throw new NoReparable('faltan las tablas de cuantización');
+				const { h, v } = this.comps[c];
+				for (let j = 0; j < h * v; j++) {
+					this.slots.push({ c, td, ta, h, v, jx: j % h, jy: Math.floor(j / h), dS: huff[td].S, dL: huff[td].L, aS: huff[16 + ta].S, aL: huff[16 + ta].L });
+				}
+			}
+			this.ns = this.slots.length;
+			this.total = this.porFila * this.filas * this.ns;
+		}
+
+		posicion(b) {
+			const mcu = Math.floor(b / this.ns), slot = b - mcu * this.ns;
+			const fila = Math.floor(mcu / this.porFila), col = mcu - fila * this.porFila;
+			const s = this.slots[slot];
+			return [s.c, col * s.h + s.jx, fila * s.v + s.jy];
+		}
+
+		// Lee bloques desde el bit `pos`. Devuelve los bloques leídos, el bit final y por qué se detuvo.
+		decodificar(u, pos, slot, nbits, limite, inicios, dcs) {
+			const ns = this.ns, slots = this.slots;
+			const preds = [0, 0, 0];
+			const lim = limite == null ? Infinity : limite;
+			let nb = 0;
+			while (nb < lim) {
+				if (pos >= nbits) return { nb, pos, motivo: 'fin' };
+				const sl = slots[slot];
+				const p0 = pos;
+				let by = pos >>> 3;
+				let idx = (((u[by] << 16) | (u[by + 1] << 8) | u[by + 2]) >>> (8 - (pos & 7))) & 0xffff;
+				let n = sl.dL[idx];
+				if (!n) return { nb, pos: p0, motivo: 'código DC inválido' };
+				const s = sl.dS[idx];
+				pos += n;
+				if (s > 11) return { nb, pos: p0, motivo: 'categoría DC inválida' };
+				let bits = 0;
+				if (s) {
+					by = pos >>> 3;
+					bits = ((((u[by] << 16) | (u[by + 1] << 8) | u[by + 2]) >>> (8 - (pos & 7))) & 0xffff) >>> (16 - s);
+					if (bits < 1 << (s - 1)) bits -= (1 << s) - 1;
+					pos += s;
+				}
+				const aS = sl.aS, aL = sl.aL;
+				let k = 1;
+				while (k < 64) {
+					by = pos >>> 3;
+					idx = (((u[by] << 16) | (u[by + 1] << 8) | u[by + 2]) >>> (8 - (pos & 7))) & 0xffff;
+					n = aL[idx];
+					if (!n) return { nb, pos: p0, motivo: 'código AC inválido' };
+					const rs = aS[idx];
+					pos += n;
+					const s2 = rs & 15;
+					if (s2 === 0) {
+						if (rs === 0xf0) {
+							k += 16;
+							continue;
+						}
+						if (rs === 0) break;
+						return { nb, pos: p0, motivo: 'símbolo AC inválido' };
+					}
+					k += (rs >> 4) + 1;
+					pos += s2;
+				}
+				if (k > 64) return { nb, pos: p0, motivo: 'más de 64 coeficientes' };
+				if (pos > nbits) return { nb, pos: p0, motivo: 'fin' };
+				if (inicios) inicios[nb] = p0;
+				preds[sl.c] += bits;
+				if (dcs) dcs[nb] = preds[sl.c];
+				nb++;
+				slot = slot + 1 < ns ? slot + 1 : 0;
+			}
+			return { nb, pos, motivo: null };
+		}
+
+		exif() {
+			const d = this.d;
+			const s = this.segs.find((x) => x.m === 0xe1 && d[x.i + 4] === 0x45 && d[x.i + 5] === 0x78 && d[x.i + 6] === 0x69 && d[x.i + 7] === 0x66 && d[x.i + 8] === 0 && d[x.i + 9] === 0);
+			if (!s) return { fecha: null, mini: null };
+			try {
+				return leerExif(d, s.i + 10, s.i + s.n);
+			} catch (e) {
+				return { fecha: null, mini: null };
+			}
+		}
+
+		// Imágenes del segmento MPF: posición dentro del segmento, tipo, tamaño e inicio en el archivo
+		mpf() {
+			const d = this.d;
+			const s = this.segs.find((x) => x.m === 0xe2 && d[x.i + 4] === 0x4d && d[x.i + 5] === 0x50 && d[x.i + 6] === 0x46 && d[x.i + 7] === 0);
+			if (!s) return null;
+			try {
+				const L = lectorTiff(d, s.i + 8);
+				const { tags } = L.ifd(L.u32(4));
+				const t = tags.get(0xb002);
+				if (!t) return null;
+				const vo = L.u32(t.vo);
+				const ents = [];
+				for (let q = 0; q < Math.floor(t.n / 16); q++) {
+					const o = vo + 16 * q;
+					const off = L.u32(o + 8);
+					ents.push({ pos: 8 + o, attr: L.u32(o), size: L.u32(o + 4), off: off ? s.i + 8 + off : 0 });
+				}
+				return { i: s.i, le: L.le, ents };
+			} catch (e) {
+				return null;
+			}
+		}
+	}
+
+	// Copia los datos de imagen [a, b) quitando el 00 que sigue a cada FF; agrega ceros al final para que la lectura no exceda el búfer.
+	function sinRelleno(d, a, b) {
+		const u = new Uint8Array(b - a + 8);
+		let j = 0;
+		for (let i = a; i < b; i++) {
+			const x = d[i];
+			u[j++] = x;
+			if (x === 0xff && i + 1 < b && d[i + 1] === 0x00) i++;
+		}
+		return { u, len: j };
+	}
+
+	// Vuelve a poner el 00 después de cada FF
+	function conRelleno(b) {
+		let ff = 0;
+		for (let i = 0; i < b.length; i++) if (b[i] === 0xff) ff++;
+		const out = new Uint8Array(b.length + ff);
+		let j = 0;
+		for (let i = 0; i < b.length; i++) {
+			out[j++] = b[i];
+			if (b[i] === 0xff) out[j++] = 0;
+		}
+		return out;
+	}
+
+	// Zonas dañadas: un FF que no va seguido de 00, o tramos largos de ceros
+	function buscarZonas(d, ini, fin) {
+		const marcas = [];
+		for (let j = ini; j + 1 < fin; j++) {
+			if (d[j] !== 0xff) continue;
+			if (d[j + 1] === 0x00) {
+				j++;
+				continue;
+			}
+			marcas.push([j, j + 2]);
+		}
+		for (let j = ini; j < fin; ) {
+			if (d[j] !== 0) {
+				j++;
+				continue;
+			}
+			let k = j;
+			while (k < fin && d[k] === 0) k++;
+			if (k - j >= 256) marcas.push([j, k]);
+			j = k;
+		}
+		marcas.sort((x, y) => x[0] - y[0]);
+		const juntas = [];
+		for (const [a, b] of marcas) {
+			const ult = juntas[juntas.length - 1];
+			if (ult && a - ult[1] <= UNION) ult[1] = Math.max(ult[1], b);
+			else juntas.push([a, b]);
+		}
+		const zonas = [];
+		for (let [a, b] of juntas) {
+			a = Math.max(ini, Math.floor(a / ALINEACION) * ALINEACION);
+			b = Math.min(fin, Math.ceil(b / ALINEACION) * ALINEACION);
+			const ult = zonas[zonas.length - 1];
+			if (ult && a <= ult[1]) ult[1] = Math.max(ult[1], b);
+			else zonas.push([a, b]);
+		}
+		return zonas;
+	}
+
+	// Posición en el archivo del byte k de los datos del tramo [a, b) ya sin relleno
+	function aOriginal(d, a, b, k) {
+		let extra = 0;
+		for (let j = a; j + 1 < b; j++) {
+			if (d[j] === 0xff && d[j + 1] === 0x00) {
+				if (j - a - extra >= k) break;
+				extra++;
+				j++;
+			}
+		}
+		return a + k + extra;
+	}
+
+	// --- decodificación completa de la vista previa interna (para usarla de referencia)
+
+	function leerBloque(u, pos, sl, coef) {
+		coef.fill(0);
+		let idx = leerBits(u, pos, 16);
+		let n = sl.dL[idx];
+		if (!n) return -1;
+		let s = sl.dS[idx];
+		pos += n;
+		if (s > 11) return -1;
+		let v = 0;
+		if (s) {
+			v = leerBits(u, pos, s);
+			if (v < 1 << (s - 1)) v -= (1 << s) - 1;
+			pos += s;
+		}
+		coef[0] = v;
+		let k = 1;
+		while (k < 64) {
+			idx = leerBits(u, pos, 16);
+			n = sl.aL[idx];
+			if (!n) return -1;
+			const rs = sl.aS[idx];
+			pos += n;
+			s = rs & 15;
+			if (s === 0) {
+				if (rs === 0xf0) {
+					k += 16;
+					continue;
+				}
+				if (rs === 0) break;
+				return -1;
+			}
+			k += rs >> 4;
+			if (k > 63) return -1;
+			v = leerBits(u, pos, s);
+			if (v < 1 << (s - 1)) v -= (1 << s) - 1;
+			pos += s;
+			coef[k++] = v;
+		}
+		return pos;
+	}
+
+	function idct(F, out) {
+		for (let y = 0; y < 8; y++) {
+			for (let fu = 0; fu < 8; fu++) {
+				let s = 0;
+				for (let fv = 0; fv < 8; fv++) s += CS[fv * 8 + y] * F[fv * 8 + fu];
+				TMP[y * 8 + fu] = s;
+			}
+		}
+		for (let y = 0; y < 8; y++) {
+			for (let x = 0; x < 8; x++) {
+				let s = 0;
+				for (let fu = 0; fu < 8; fu++) s += TMP[y * 8 + fu] * CS[fu * 8 + x];
+				out[y * 8 + x] = s;
+			}
+		}
+	}
+
+	function dct(px, F) {
+		for (let y = 0; y < 8; y++) {
+			for (let fu = 0; fu < 8; fu++) {
+				let s = 0;
+				for (let x = 0; x < 8; x++) s += px[y * 8 + x] * CS[fu * 8 + x];
+				TMP[y * 8 + fu] = s;
+			}
+		}
+		for (let fv = 0; fv < 8; fv++) {
+			for (let fu = 0; fu < 8; fu++) {
+				let s = 0;
+				for (let y = 0; y < 8; y++) s += TMP[y * 8 + fu] * CS[fv * 8 + y];
+				F[fv * 8 + fu] = s;
+			}
+		}
+	}
+
+	// Decodifica un JPG baseline sano a tres planos (Y, Cb, Cr) del tamaño de la imagen
+	function decodificarImagen(bytes) {
+		const f = new Foto(bytes, true);
+		const intervalos = [];
+		let a = f.iniDatos, j = f.iniDatos;
+		for (; j + 1 < bytes.length; j++) {
+			if (bytes[j] !== 0xff) continue;
+			const m = bytes[j + 1];
+			if (m === 0x00) {
+				j++;
+				continue;
+			}
+			if (m === 0xff) continue;
+			if (m >= 0xd0 && m <= 0xd7) {
+				intervalos.push([a, j]);
+				a = j + 2;
+				j++;
+				continue;
+			}
+			break;
+		}
+		intervalos.push([a, Math.min(j, bytes.length)]);
+		const crudos = f.comps.map((cc) => {
+			const w = f.porFila * cc.h * 8, h = f.filas * cc.v * 8;
+			return { w, h, data: new Uint8ClampedArray(w * h) };
+		});
+		const coef = new Float64Array(64), F = new Float64Array(64), px = new Float64Array(64);
+		const mcusTotal = f.porFila * f.filas;
+		const porIntervalo = f.dri || mcusTotal;
+		let mcu = 0;
+		for (const [ia, ib] of intervalos) {
+			if (mcu >= mcusTotal) break;
+			const { u, len } = sinRelleno(bytes, ia, ib);
+			const nbits = len * 8;
+			const preds = [0, 0, 0];
+			let pos = 0;
+			const hasta = Math.min(mcusTotal, mcu + porIntervalo);
+			for (; mcu < hasta; mcu++) {
+				const fila = Math.floor(mcu / f.porFila), col = mcu % f.porFila;
+				for (let slot = 0; slot < f.ns; slot++) {
+					const sl = f.slots[slot];
+					pos = leerBloque(u, pos, sl, coef);
+					if (pos < 0 || pos > nbits) throw new Error('vista previa ilegible');
+					preds[sl.c] += coef[0];
+					coef[0] = preds[sl.c];
+					const q = f.qt[f.comps[sl.c].tq];
+					F.fill(0);
+					for (let k = 0; k < 64; k++) F[ZZ[k]] = coef[k] * q[k];
+					idct(F, px);
+					const p = crudos[sl.c];
+					const x0 = (col * sl.h + sl.jx) * 8, y0 = (fila * sl.v + sl.jy) * 8;
+					// Uint8ClampedArray ya redondea al guardar
+					for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) p.data[(y0 + y) * p.w + x0 + x] = px[y * 8 + x] + 128;
+				}
+			}
+		}
+		// los tres planos al tamaño de la imagen; Cb y Cr se repiten si vienen a menor resolución
+		const W = f.ancho, H = f.alto;
+		const planos = f.comps.map((cc, c) => {
+			const p = crudos[c];
+			const out = new Uint8Array(W * H);
+			const fy = cc.v / f.vmax;
+			if (cc.h === f.hmax) {
+				for (let y = 0; y < H; y++) {
+					const fila = Math.min(p.h - 1, Math.floor(y * fy)) * p.w;
+					out.set(p.data.subarray(fila, fila + W), y * W);
+				}
+				return out;
+			}
+			const columna = new Int32Array(W);
+			for (let x = 0; x < W; x++) columna[x] = Math.min(p.w - 1, Math.floor((x * cc.h) / f.hmax));
+			const datos = p.data;
+			for (let y = 0; y < H; y++) {
+				const fila = Math.min(p.h - 1, Math.floor(y * fy)) * p.w, o = y * W;
+				for (let x = 0; x < W; x++) out[o + x] = datos[fila + columna[x]];
+			}
+			return out;
+		});
+		return { ancho: W, alto: H, planos };
+	}
+
+	// La miniatura del Exif suele traer franjas negras arriba y abajo; se recortan
+	function sinFranjasNegras(ref) {
+		const { ancho: w, alto: h, planos } = ref;
+		const Y = planos[0];
+		const oscura = (x0, y0, x1, y1) => {
+			let t = 0, mx = 0, n = 0;
+			for (let y = y0; y < y1; y++) {
+				for (let x = x0; x < x1; x++) {
+					const v = Y[y * w + x];
+					t += v;
+					if (v > mx) mx = v;
+					n++;
+				}
+			}
+			return t / n < 16 && mx < 48;
+		};
+		let arriba = 0, abajo = h, izq = 0, der = w;
+		while (arriba < h >> 2 && oscura(0, arriba, w, arriba + 1)) arriba++;
+		while (abajo > h - (h >> 2) && oscura(0, abajo - 1, w, abajo)) abajo--;
+		while (izq < w >> 2 && oscura(izq, arriba, izq + 1, abajo)) izq++;
+		while (der > w - (w >> 2) && oscura(der - 1, arriba, der, abajo)) der--;
+		const nw = der - izq, nh = abajo - arriba;
+		const nuevos = planos.map((p) => {
+			const out = new Uint8Array(nw * nh);
+			for (let y = 0; y < nh; y++) out.set(p.subarray((arriba + y) * w + izq, (arriba + y) * w + der), y * nw);
+			return out;
+		});
+		return { ancho: nw, alto: nh, planos: nuevos };
+	}
+
+	function pesosArea(a, b, n, tam) {
+		const escala = (b - a) / n;
+		const res = [];
+		for (let i = 0; i < n; i++) {
+			const s0 = a + i * escala, s1 = s0 + escala;
+			const lista = [];
+			let tot = 0;
+			for (let p = Math.floor(s0); p < Math.ceil(s1); p++) {
+				const w = Math.min(s1, p + 1) - Math.max(s0, p);
+				if (w > 0) {
+					lista.push(Math.min(tam - 1, Math.max(0, p)), w);
+					tot += w;
+				}
+			}
+			for (let k = 1; k < lista.length; k += 2) lista[k] /= tot;
+			res.push(lista);
+		}
+		return res;
+	}
+
+	// Lleva la región [x0,x1)×[y0,y1) del plano a dw×dh: promedio por área al reducir, bilineal al ampliar
+	function remuestrear(src, sw, sh, x0, y0, x1, y1, dw, dh) {
+		const out = new Float32Array(dw * dh);
+		if ((x1 - x0) / dw >= 1 && (y1 - y0) / dh >= 1) {
+			// en dos pasadas: primero a lo ancho las filas que se usan, luego a lo alto
+			const px = pesosArea(x0, x1, dw, sw), py = pesosArea(y0, y1, dh, sh);
+			const filas = new Map();
+			for (const ly of py) {
+				for (let a = 0; a < ly.length; a += 2) {
+					const y = ly[a];
+					if (filas.has(y)) continue;
+					const fila = new Float32Array(dw), o = y * sw;
+					for (let ox = 0; ox < dw; ox++) {
+						const lx = px[ox];
+						let t = 0;
+						for (let b = 0; b < lx.length; b += 2) t += src[o + lx[b]] * lx[b + 1];
+						fila[ox] = t;
+					}
+					filas.set(y, fila);
+				}
+			}
+			for (let oy = 0; oy < dh; oy++) {
+				const ly = py[oy], o = oy * dw;
+				for (let a = 0; a < ly.length; a += 2) {
+					const fila = filas.get(ly[a]), w = ly[a + 1];
+					for (let ox = 0; ox < dw; ox++) out[o + ox] += fila[ox] * w;
+				}
+			}
+			return out;
+		}
+		const ex = (x1 - x0) / dw, ey = (y1 - y0) / dh;
+		for (let oy = 0; oy < dh; oy++) {
+			const sy = Math.min(sh - 1, Math.max(0, y0 + (oy + 0.5) * ey - 0.5));
+			const ya = Math.floor(sy), yb = Math.min(sh - 1, ya + 1), fy = sy - ya;
+			for (let ox = 0; ox < dw; ox++) {
+				const sx = Math.min(sw - 1, Math.max(0, x0 + (ox + 0.5) * ex - 0.5));
+				const xa = Math.floor(sx), xb = Math.min(sw - 1, xa + 1), fx = sx - xa;
+				const arriba = src[ya * sw + xa] * (1 - fx) + src[ya * sw + xb] * fx;
+				const abajo = src[yb * sw + xa] * (1 - fx) + src[yb * sw + xb] * fx;
+				out[oy * dw + ox] = arriba * (1 - fy) + abajo * fy;
+			}
+		}
+		return out;
+	}
+
+	async function decodificarReferencia(bytes, navegador) {
+		try {
+			return decodificarImagen(bytes);
+		} catch (e) {
+			/* se intenta con el navegador */
+		}
+		if (navegador) {
+			try {
+				return await navegador(bytes);
+			} catch (e) {
+				/* sin referencia */
+			}
+		}
+		return null;
+	}
+
+	const TIPOS_PREVIA = [0x010001, 0x010002]; // en el MPF, las imágenes marcadas como vista previa
+
+	function previasMPF(f, mpf) {
+		const d = f.d;
+		const validas = [];
+		const previas = [];
+		if (mpf) {
+			for (const e of mpf.ents.slice(1)) {
+				const ok = e.off > 0 && e.off + e.size <= d.length && d[e.off] === 0xff && d[e.off + 1] === 0xd8 && d[e.off + e.size - 2] === 0xff && d[e.off + e.size - 1] === 0xd9;
+				validas.push(ok);
+				if (ok && TIPOS_PREVIA.includes(e.attr & 0xffffff)) previas.push(e);
+			}
+		}
+		previas.sort((x, y) => y.size - x.size);
+		return { validas, previas };
+	}
+
+	// La vista previa interna más grande que se lea completa; si no hay, la miniatura del Exif
+	async function referencia(f, mpf, navegador) {
+		const aspecto = f.ancho / f.alto;
+		const { validas, previas } = previasMPF(f, mpf);
+		for (const e of previas) {
+			const ref = await decodificarReferencia(f.d.subarray(e.off, e.off + e.size), navegador);
+			if (ref && Math.abs(ref.ancho / ref.alto - aspecto) / aspecto < 0.02) return { ref, origen: 'vista previa interna', validas };
+		}
+		const { mini } = f.exif();
+		if (mini) {
+			let ref = await decodificarReferencia(mini, navegador);
+			if (ref) {
+				ref = sinFranjasNegras(ref);
+				if (Math.abs(ref.ancho / ref.alto - aspecto) / aspecto < 0.06) return { ref, origen: 'miniatura del Exif', validas };
+			}
+		}
+		return { ref: null, origen: null, validas };
+	}
+
+	function previaParaMostrar(f, mpf) {
+		const { previas } = previasMPF(f, mpf);
+		if (previas.length) return f.d.slice(previas[0].off, previas[0].off + previas[0].size);
+		const { mini } = f.exif();
+		return mini ? mini.slice() : null;
+	}
+
+	// Valor DC esperado de cada bloque según la referencia
+	function rejillas(f, ref) {
+		return f.comps.map((cc, c) => {
+			const w = f.porFila * cc.h, h = f.filas * cc.v;
+			const cw = Math.ceil((f.ancho * cc.h) / f.hmax), ch = Math.ceil((f.alto * cc.v) / f.vmax);
+			const sx = ref.ancho / cw, sy = ref.alto / ch;
+			const g = remuestrear(ref.planos[c], ref.ancho, ref.alto, 0, 0, w * 8 * sx, h * 8 * sy, w, h);
+			const factor = 8 / f.qt[cc.tq][0];
+			const est = new Float32Array(w * h);
+			for (let k = 0; k < w * h; k++) est[k] = (g[k] - 128) * factor;
+			return { est, w };
+		});
+	}
+
+	// Qué tan bien coincide un tramo con la referencia si empieza en el bloque bAbs (menor es mejor)
+	function puntaje(f, grids, s, bAbs, idxs) {
+		const res = [[], [], []];
+		for (const i of idxs) {
+			const b = bAbs + i;
+			if (b < 0 || b >= f.total) continue;
+			const [c, bx, by] = f.posicion(b);
+			const g = grids[c];
+			res[c].push(g.est[by * g.w + bx] - s.dcs[i]);
+		}
+		if (!res.every((x) => x.length)) return { score: Infinity, P: [0, 0, 0], mad: [0, 0, 0] };
+		const P = res.map(mediana);
+		const mad = res.map((x, c) => mediana(x.map((v) => Math.abs(v - P[c]))));
+		return { score: mad[0] + mad[1] + mad[2], P, mad };
+	}
+
+	// Primer bloque sano después de un daño: el punto por el que pasan todas (o casi todas) las lecturas de prueba.
+	// Se prueban arranques en los primeros 256 bits para que alguno caiga en el inicio real de un bloque.
+	function resincronizar(f, u, nbits) {
+		const conteo = new Map();
+		let validos = 0;
+		const ini = new Uint32Array(300);
+		for (let b0 = 0; b0 < Math.min(256, nbits); b0++) {
+			for (let s0 = 0; s0 < f.ns; s0++) {
+				const r = f.decodificar(u, b0, s0, nbits, 300, ini, null);
+				if (r.motivo === null || (r.motivo === 'fin' && r.nb)) {
+					validos++;
+					for (let k = 0; k < r.nb; k++) {
+						const clave = ini[k] * 16 + ((s0 + k) % f.ns);
+						conteo.set(clave, (conteo.get(clave) || 0) + 1);
+					}
+				}
+			}
+		}
+		for (const umbral of [1, 0.9, 0.75]) {
+			let mejor = Infinity;
+			for (const [clave, v] of conteo) if (v >= umbral * validos && clave < mejor) mejor = clave;
+			if (mejor < Infinity) return [Math.floor(mejor / 16), mejor % 16];
+		}
+		return null;
+	}
+
+	// Ubica un tramo intermedio comparándolo con la referencia en las posiciones posibles
+	function ubicar(f, grids, segs, i, iniDatos, finDatos, rep) {
+		const s = segs[i];
+		let prev = null;
+		for (let q = i - 1; q >= 0; q--) if (segs[q].bAbs !== null) { prev = segs[q]; break; }
+		let sig = null;
+		for (let q = i + 1; q < segs.length; q++) if (segs[q].bAbs !== null) { sig = q; break; }
+		const L = prev ? prev.bAbs + prev.n : 0;
+		const fin = sig !== null ? segs[sig].bAbs : f.total;
+		let entre = 0;
+		for (let q = i + 1; q < (sig !== null ? sig : segs.length); q++) entre += segs[q].n;
+		const U = fin - s.n - entre;
+		const dens = prev && prev.b > prev.a ? prev.n / (prev.b - prev.a) : f.total / Math.max(1, finDatos - iniDatos);
+		const perdido = (s.a - (prev ? prev.b : iniDatos)) * dens;
+		const centro = L + perdido, W = Math.max(2 * f.porFila * f.ns, 0.75 * perdido);
+		const lo = Math.max(L, Math.floor(centro - W)), hi = Math.min(U, Math.floor(centro + W));
+		const cands = [];
+		for (let b = lo + ((((s.s0 - lo) % f.ns) + f.ns) % f.ns); b <= hi; b += f.ns) cands.push(b);
+		if (!cands.length || s.n < 200) {
+			rep.avisos.push(`no fue posible ubicar un tramo de ${miles(s.n)} bloques; se rellenó`);
+			return;
+		}
+		const idxG = muestra(s.n, 150, f.ns);
+		const gruesos = new Map(cands.map((b) => [b, puntaje(f, grids, s, b, idxG).score]));
+		const mejores = [...cands].sort((x, y) => gruesos.get(x) - gruesos.get(y)).slice(0, 25);
+		const idxF = muestra(s.n, 900, f.ns);
+		const finos = mejores.map((b) => [puntaje(f, grids, s, b, idxF).score, b]).sort((x, y) => x[0] - y[0] || x[1] - y[1]);
+		const mejor = finos[0][1];
+		let lejos = Infinity;
+		for (const [b, v] of gruesos) if (Math.abs(b - mejor) > 2 * f.porFila * f.ns && v < lejos) lejos = v;
+		if (lejos < Infinity && lejos < 1.25 * gruesos.get(mejor)) {
+			rep.avisos.push(`la posición de un tramo de ${miles(s.n)} bloques era incierta; se rellenó`);
+			return;
+		}
+		s.bAbs = mejor;
+	}
+
+	// Quita de las orillas del tramo los bloques que no coinciden con la referencia (datos inválidos leídos antes de resincronizar).
+	// Cada orilla debe empezar con 4 bloques buenos seguidos y tener al menos 13 de 16 buenos.
+	function recortar(f, grids, s, cabeza, cola) {
+		const n = s.n;
+		const { P: Pm, mad } = puntaje(f, grids, s, s.bAbs, muestra(n, 900, f.ns));
+		const T = mad.map((m) => Math.max(6 * m, 4));
+		const bueno = (i) => {
+			const b = s.bAbs + i;
+			if (b >= f.total) return false;
+			const [c, bx, by] = f.posicion(b);
+			const g = grids[c];
+			return Math.abs(g.est[by * g.w + bx] - s.dcs[i] - Pm[c]) <= T[c];
+		};
+		const suma = (ok, a, b) => {
+			let t = 0;
+			for (let k = a; k < b; k++) t += ok[k];
+			return t;
+		};
+		let k0 = 0, k1 = n;
+		if (cabeza) {
+			const lim = Math.min(n, 20000);
+			const ok = new Uint8Array(lim);
+			for (let i = 0; i < lim; i++) ok[i] = bueno(i) ? 1 : 0;
+			k0 = n;
+			for (let i = 0; i < Math.max(1, lim - 15); i++) {
+				if (suma(ok, i, i + 4) === 4 && suma(ok, i, i + 16) >= 13) {
+					k0 = i;
+					break;
+				}
+			}
+		}
+		if (cola && k0 < n) {
+			const lo = Math.max(k0, n - 20000);
+			const ok = new Uint8Array(n - lo);
+			for (let i = lo; i < n; i++) ok[i - lo] = bueno(i) ? 1 : 0;
+			k1 = k0;
+			for (let e = n; e > lo + 15; e--) {
+				if (suma(ok, e - lo - 4, e - lo) === 4 && suma(ok, e - lo - 16, e - lo) >= 13) {
+					k1 = e;
+					break;
+				}
+			}
+		}
+		return [k0, k1];
+	}
+
+	// Diferencia entre el valor DC esperado por la referencia y el del tramo (con su corrección P), por canal
+	function diferencias(f, grids, s, P) {
+		const res = [[], [], []];
+		const paso = pasoParejo(Math.floor((s.k1 - s.k0) / 60000), f.ns);
+		for (let i = s.k0; i < s.k1; i += paso) {
+			const [c, bx, by] = f.posicion(s.bAbs + i);
+			const g = grids[c];
+			res[c].push(g.est[by * g.w + bx] - s.dcs[i] - P[c]);
+		}
+		return res;
+	}
+
+	// Valor acumulado del último bloque de cada canal antes del primer bloque que se conserva del tramo
+	function baseDC(f, s) {
+		const base = [0, 0, 0], vistos = new Set();
+		for (let i = s.k0 - 1; i >= 0 && vistos.size < 3; i--) {
+			const c = f.slots[(s.s0 + i) % f.ns].c;
+			if (!vistos.has(c)) {
+				base[c] = s.dcs[i];
+				vistos.add(c);
+			}
+		}
+		return base;
+	}
+
+	class Escritor {
+		constructor(cap) {
+			this.buf = new Uint8Array(Math.max(1024, cap));
+			this.n = 0;
+			this.acc = 0;
+			this.nacc = 0;
+		}
+		asegurar(extra) {
+			if (this.n + extra <= this.buf.length) return;
+			let tam = this.buf.length * 2;
+			while (tam < this.n + extra) tam *= 2;
+			const nb = new Uint8Array(tam);
+			nb.set(this.buf.subarray(0, this.n));
+			this.buf = nb;
+		}
+		escribir(v, n) {
+			this.asegurar(4);
+			this.acc = ((this.acc << n) | (v & ((1 << n) - 1))) >>> 0;
+			this.nacc += n;
+			while (this.nacc >= 8) {
+				this.nacc -= 8;
+				this.buf[this.n++] = (this.acc >>> this.nacc) & 0xff;
+			}
+			this.acc &= (1 << this.nacc) - 1;
+		}
+		// Copia los bits [a, b) de u de byte en byte, aunque ni el origen ni el destino estén alineados
+		copiar(u, a, b) {
+			let n = b - a;
+			this.asegurar((n >>> 3) + 8);
+			const s = a & 7, r = this.nacc, buf = this.buf;
+			let i = a >>> 3, acc = this.acc, k = this.n;
+			while (n >= 8) {
+				const byte = s ? ((u[i] << s) | (u[i + 1] >>> (8 - s))) & 0xff : u[i];
+				if (r) {
+					acc = (acc << 8) | byte;
+					buf[k++] = (acc >>> r) & 0xff;
+					acc &= (1 << r) - 1;
+				} else {
+					buf[k++] = byte;
+				}
+				i++;
+				n -= 8;
+			}
+			this.acc = acc;
+			this.n = k;
+			if (n) this.escribir(leerBits(u, b - n, n), n);
+		}
+		terminar() {
+			const r = (8 - this.nacc) % 8;
+			if (r) this.escribir((1 << r) - 1, r);
+			return this.buf.subarray(0, this.n);
+		}
+	}
+
+	// Codifica los bloques perdidos [g0, g1) a partir de la referencia ampliada. X fija el valor DC del último bloque de cada canal.
+	function puente(f, ref, g0, g1, preds, X, esc) {
+		const ns = f.ns, pf = f.porFila;
+		const r0 = Math.floor(Math.floor(g0 / ns) / pf), r1 = Math.floor(Math.floor((g1 - 1) / ns) / pf);
+		const planos = f.comps.map((cc, c) => {
+			const W = pf * cc.h * 8;
+			const y0 = r0 * cc.v * 8, y1 = (r1 + 1) * cc.v * 8;
+			const cw = Math.ceil((f.ancho * cc.h) / f.hmax), ch = Math.ceil((f.alto * cc.v) / f.vmax);
+			const sx = ref.ancho / cw, sy = ref.alto / ch;
+			const data = remuestrear(ref.planos[c], ref.ancho, ref.alto, 0, Math.min(y0 * sy, ref.alto - 1), Math.min(W * sx, ref.ancho), Math.min(y1 * sy, ref.alto), W, y1 - y0);
+			return { data, W, y0 };
+		});
+		const ultimo = {};
+		for (let b = g1 - 1; b >= Math.max(g0, g1 - ns); b--) {
+			const c = f.slots[b % ns].c;
+			if (!(c in ultimo)) ultimo[c] = b;
+		}
+		preds = preds.slice();
+		const px = new Float64Array(64), F = new Float64Array(64), coef = new Int32Array(64);
+		for (let b = g0; b < g1; b++) {
+			const [c, bx, by] = f.posicion(b);
+			const sl = f.slots[b % ns];
+			const { data, W, y0 } = planos[c];
+			const base = (by * 8 - y0) * W + bx * 8;
+			for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) px[y * 8 + x] = data[base + y * W + x] - 128;
+			dct(px, F);
+			const q = f.qt[f.comps[c].tq];
+			for (let k = 0; k < 64; k++) coef[k] = redondear(F[ZZ[k]] / q[k]);
+			if (X && ultimo[c] === b) coef[0] = X[c];
+			const dif = Math.max(-2047, Math.min(2047, coef[0] - preds[c]));
+			preds[c] += dif;
+			let s = bitLength(Math.abs(dif));
+			const dc = f.tab[sl.td].codigos;
+			if (!dc.has(s)) throw new NoReparable('la tabla de codificación de la foto está incompleta');
+			let [code, n] = dc.get(s);
+			esc.escribir(code, n);
+			if (s) esc.escribir(dif >= 0 ? dif : dif + (1 << s) - 1, s);
+			const ac = f.tab[16 + sl.ta].codigos;
+			if (!ac.has(0x00)) throw new NoReparable('la tabla de codificación de la foto está incompleta');
+			let corrida = 0;
+			for (let k = 1; k < 64; k++) {
+				let v = coef[k];
+				if (v === 0) {
+					corrida++;
+					continue;
+				}
+				s = Math.min(bitLength(Math.abs(v)), 10);
+				const sim = ((corrida % 16) << 4) | s;
+				if (!ac.has(sim) || (corrida > 15 && !ac.has(0xf0))) {
+					corrida++;
+					continue;
+				}
+				for (let z = 0; z < Math.floor(corrida / 16); z++) {
+					[code, n] = ac.get(0xf0);
+					esc.escribir(code, n);
+				}
+				[code, n] = ac.get(sim);
+				esc.escribir(code, n);
+				v = Math.max(Math.min(v, (1 << s) - 1), -((1 << s) - 1));
+				esc.escribir(v >= 0 ? v : v + (1 << s) - 1, s);
+				corrida = 0;
+			}
+			if (corrida) {
+				[code, n] = ac.get(0x00);
+				esc.escribir(code, n);
+			}
+		}
+		return preds;
+	}
+
+	function filasPx(f, g0, g1) {
+		const r0 = Math.floor(Math.floor(g0 / f.ns) / f.porFila), r1 = Math.floor(Math.floor((g1 - 1) / f.ns) / f.porFila);
+		return [r0 * 8 * f.vmax, Math.min(f.alto, (r1 + 1) * 8 * f.vmax)];
+	}
+
+	// ¿Se lee completa la imagen principal, de principio a fin?
+	function seLeeCompleta(f, d, ini, fin) {
+		const { u, len } = sinRelleno(d, ini, fin);
+		const nbits = len * 8;
+		const r = f.decodificar(u, 0, 0, nbits, f.total, null, null);
+		const sobran = nbits - r.pos;
+		const unos = (1 << sobran) - 1;
+		return r.nb === f.total && sobran < 8 && (u[len - 1] & unos) === unos;
+	}
+
+	// Lee el resultado completo con el mismo lector y compara cada bloque con la referencia
+	function comprobar(f, salida, ini, fin, grids) {
+		const { u, len } = sinRelleno(salida, ini, fin);
+		const nbits = len * 8;
+		const dcs = new Int32Array(f.total);
+		const r = f.decodificar(u, 0, 0, nbits, f.total, null, dcs);
+		const sobran = nbits - r.pos;
+		const unos = (1 << sobran) - 1;
+		if (!(r.nb === f.total && sobran < 8 && (u[len - 1] & unos) === unos)) return { ok: false };
+		const q8 = f.comps.map((cc) => f.qt[cc.tq][0] / 8);
+		const bandas = new Float64Array(20), cuenta = new Float64Array(20);
+		const sumas = [0, 0, 0], cuentas = [0, 0, 0];
+		const malla = f.comps.map((cc, c) => new Int32Array(grids[c].est.length));
+		const altoY = f.filas * f.comps[0].v;
+		let b = 0;
+		for (let mcu = 0; mcu < f.porFila * f.filas; mcu++) {
+			const fila = Math.floor(mcu / f.porFila), col = mcu - fila * f.porFila;
+			for (let slot = 0; slot < f.ns; slot++, b++) {
+				const sl = f.slots[slot];
+				const c = sl.c, bx = col * sl.h + sl.jx, by = fila * sl.v + sl.jy;
+				const g = grids[c];
+				malla[c][by * g.w + bx] = dcs[b];
+				const res = (g.est[by * g.w + bx] - dcs[b]) * q8[c];
+				sumas[c] += res;
+				cuentas[c]++;
+				if (c === 0) {
+					const k = Math.min(19, Math.floor((by * 20) / altoY));
+					bandas[k] += Math.abs(res);
+					cuenta[k]++;
+				}
+			}
+		}
+		const b20 = Array.from(bandas, (v, k) => (cuenta[k] ? v / cuenta[k] : 0));
+		const medias = sumas.map((v, c) => v / Math.max(1, cuentas[c]));
+		// miniatura a 1/8 con el valor medio de cada bloque
+		const c0 = f.comps[0];
+		const mw = Math.ceil((f.ancho * c0.h) / f.hmax / 8), mh = Math.ceil((f.alto * c0.v) / f.vmax / 8);
+		const rgba = new Uint8ClampedArray(mw * mh * 4);
+		for (let y = 0; y < mh; y++) {
+			for (let x = 0; x < mw; x++) {
+				const Y = malla[0][y * grids[0].w + x] * q8[0] + 128;
+				const xb = Math.floor((x * f.comps[1].h) / c0.h), yb = Math.floor((y * f.comps[1].v) / c0.v);
+				const xr = Math.floor((x * f.comps[2].h) / c0.h), yr = Math.floor((y * f.comps[2].v) / c0.v);
+				const Cb = malla[1][yb * grids[1].w + xb] * q8[1];
+				const Cr = malla[2][yr * grids[2].w + xr] * q8[2];
+				const o = (y * mw + x) * 4;
+				rgba[o] = Y + 1.402 * Cr;
+				rgba[o + 1] = Y - 0.344136 * Cb - 0.714136 * Cr;
+				rgba[o + 2] = Y + 1.772 * Cb;
+				rgba[o + 3] = 255;
+			}
+		}
+		return { ok: true, bandas: b20, medias, mini: { w: mw, h: mh, rgba } };
+	}
+
+	const TABLA_CRC = (() => {
+		const t = new Uint32Array(256);
+		for (let n = 0; n < 256; n++) {
+			let c = n;
+			for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+			t[n] = c >>> 0;
+		}
+		return t;
+	})();
+	function crc32(b) {
+		let c = 0xffffffff;
+		for (let i = 0; i < b.length; i++) c = TABLA_CRC[(c ^ b[i]) & 0xff] ^ (c >>> 8);
+		return (c ^ 0xffffffff) >>> 0;
+	}
+
+	// Lo mínimo para mostrar la foto en la lista: miniatura del Exif y fecha, leyendo solo el inicio del archivo
+	function infoRapida(d) {
+		try {
+			if (d[0] !== 0xff || d[1] !== 0xd8) return null;
+			let i = 2;
+			while (i + 4 <= d.length) {
+				if (d[i] !== 0xff) return null;
+				const m = d[i + 1];
+				if (m === 0xff) {
+					i++;
+					continue;
+				}
+				const n = 2 + u16be(d, i + 2);
+				if (m === 0xe1 && d[i + 4] === 0x45 && d[i + 5] === 0x78 && d[i + 6] === 0x69 && d[i + 7] === 0x66 && i + n <= d.length) {
+					const ex = leerExif(d, i + 10, i + n);
+					return { mini: ex.mini ? ex.mini.slice() : null, fecha: ex.fecha };
+				}
+				if (m === 0xda) return null;
+				i += n;
+			}
+		} catch (e) {
+			/* sin miniatura */
+		}
+		return null;
+	}
+
+	async function reparar(entrada, opciones) {
+		const t0 = Date.now();
+		const d = entrada instanceof Uint8Array ? entrada : new Uint8Array(entrada);
+		const rep = { estado: '', notas: [], avisos: [], salida: null, crc: null, franjas: [], ancho: 0, alto: 0, fecha: null, previa: null, mini: null, segundos: 0 };
+		try {
+			const f = new Foto(d, false);
+			rep.ancho = f.ancho;
+			rep.alto = f.alto;
+			rep.fecha = f.exif().fecha;
+			const mpf = f.mpf();
+			rep.previa = previaParaMostrar(f, mpf);
+			let finPrincipal = d.length;
+			const e0 = mpf && mpf.ents[0];
+			if (e0 && e0.size > 0 && e0.size <= d.length && d[e0.size - 2] === 0xff && d[e0.size - 1] === 0xd9) finPrincipal = e0.size;
+			const limpio = d[finPrincipal - 2] === 0xff && d[finPrincipal - 1] === 0xd9;
+			const finDatos = limpio ? finPrincipal - 2 : finPrincipal;
+			const zonas = buscarZonas(d, f.iniDatos, finDatos);
+			if (!zonas.length && limpio && seLeeCompleta(f, d, f.iniDatos, finDatos)) {
+				rep.estado = 'sinDano';
+				rep.notas.push('la foto está completa; no requiere reparación');
+				return rep;
+			}
+			const { ref, origen, validas } = await referencia(f, mpf, opciones && opciones.decodificarNavegador);
+			if (!ref) throw new NoReparable('no contiene una vista previa interna utilizable como referencia');
+			if (origen !== 'vista previa interna') rep.avisos.push('se usó la miniatura de 160×120 como referencia, por lo que el color y la zona reconstruida son menos precisos');
+			const grids = rejillas(f, ref);
+
+			// 1) leer cada tramo sano; si aparece un error que no dejó marcas, el tramo se divide ahí
+			const tramos = [];
+			let cursor = f.iniDatos;
+			for (const [a, b] of zonas) {
+				if (a > cursor) tramos.push([cursor, a]);
+				cursor = Math.max(cursor, b);
+			}
+			if (cursor < finDatos) tramos.push([cursor, finDatos]);
+			const segs = [];
+			let k = 0;
+			while (k < tramos.length) {
+				const [a, b] = tramos[k];
+				const { u, len } = sinRelleno(d, a, b);
+				const nbits = len * 8;
+				const primero = a === f.iniDatos;
+				const inicio = primero ? [0, 0] : resincronizar(f, u, nbits);
+				if (!inicio) {
+					rep.avisos.push(`un tramo de ${miles(b - a)} bytes resultó ilegible; se rellenó`);
+					k++;
+					continue;
+				}
+				const ini = new Uint32Array(f.total + 1), dcs = new Int32Array(f.total + 1);
+				const r = f.decodificar(u, inicio[0], inicio[1], nbits, f.total + 1, ini, dcs);
+				if (r.motivo === null) {
+					rep.avisos.push(`un tramo de ${miles(b - a)} bytes no correspondía a la foto; se rellenó`);
+					k++;
+					continue;
+				}
+				if (r.motivo !== 'fin') {
+					const err = aOriginal(d, a, b, r.pos >>> 3);
+					const z0 = Math.floor(err / ALINEACION) * ALINEACION, z1 = z0 + ALINEACION;
+					zonas.push([Math.max(z0, a), Math.min(z1, b)]);
+					if (zonas.length > 64) throw new NoReparable('tiene demasiadas zonas dañadas para repararla');
+					const nuevos = [];
+					if (z0 > a) nuevos.push([a, z0]);
+					if (z1 < b) nuevos.push([z1, b]);
+					tramos.splice(k, 1, ...nuevos);
+					continue;
+				}
+				segs.push({ a, b, u, nbits, s0: inicio[1], n: r.nb, ini, dcs, fin: r.pos, primero, bAbs: primero ? 0 : null });
+				k++;
+			}
+			zonas.sort((x, y) => x[0] - y[0]);
+
+			// 2) ubicar cada tramo: el primero empieza en el bloque 0; el último se cuenta desde el final
+			const ultimo = segs.length ? segs[segs.length - 1] : null;
+			if (ultimo && !ultimo.primero && ultimo.b === finDatos && limpio) {
+				const sobran = ultimo.nbits - ultimo.fin;
+				const unos = (1 << sobran) - 1;
+				const bAbs = f.total - ultimo.n;
+				if (sobran < 8 && (ultimo.u[(ultimo.nbits >>> 3) - 1] & unos) === unos && bAbs >= 0 && bAbs % f.ns === ultimo.s0) {
+					ultimo.bAbs = bAbs;
+					const idx = muestra(ultimo.n, 600, f.ns);
+					const p0 = puntaje(f, grids, ultimo, bAbs, idx).score;
+					const vecinas = [-f.ns, -f.porFila * f.ns].filter((dl) => bAbs + dl >= 0).map((dl) => puntaje(f, grids, ultimo, bAbs + dl, idx).score);
+					if (vecinas.length && p0 >= Math.min(...vecinas)) rep.avisos.push('la posición del último tramo es incierta');
+				}
+			}
+			segs.forEach((s, i) => {
+				if (s.bAbs === null) ubicar(f, grids, segs, i, f.iniDatos, finDatos, rep);
+			});
+
+			// 3) quitar orillas dudosas, calcular la corrección de color y dejar espacio entre tramos para fijarla.
+			// La vista previa no es idéntica a la foto: si hay un tramo sano grande antes, esa diferencia se mide
+			// ahí y se descuenta (promedios recortados); si no, se usa la mediana, que en las pruebas fue más exacta.
+			const usados = [];
+			let ancla = null;
+			for (const s of segs.filter((x) => x.bAbs !== null).sort((x, y) => x.bAbs - y.bAbs)) {
+				const cola = !(s.bAbs + s.n === f.total && s.b === finDatos && limpio);
+				[s.k0, s.k1] = recortar(f, grids, s, !s.primero, cola);
+				if (s.k0 >= s.k1) {
+					rep.avisos.push('un tramo no coincidió con la referencia; se rellenó');
+					continue;
+				}
+				if (s.primero) {
+					s.P = [0, 0, 0];
+				} else {
+					const dif0 = diferencias(f, grids, s, [0, 0, 0]);
+					if (ancla && s.k1 - s.k0 >= 20000) {
+						const sesgo = diferencias(f, grids, ancla, ancla.P).map(recortada);
+						s.P = dif0.map((x, c) => redondear(recortada(x) - sesgo[c]));
+					} else {
+						s.P = dif0.map((x) => (x.length ? redondear(mediana(x)) : 0));
+					}
+				}
+				const prev = usados[usados.length - 1];
+				const finPrev = prev ? prev.bAbs + prev.k1 : 0;
+				const iniS = s.bAbs + s.k0;
+				if (!s.primero) {
+					if (iniS < finPrev) {
+						rep.avisos.push('dos tramos se superponían; se descartó uno');
+						continue;
+					}
+					if (iniS - finPrev < f.ns) {
+						if (prev) prev.k1 -= f.ns - (iniS - finPrev);
+						else s.k0 += f.ns - iniS;
+					}
+				}
+				usados.push(s);
+				if (s.k1 - s.k0 >= 50000) ancla = s;
+			}
+
+			// 4) armar los datos: tramos sanos tal cual + bloques perdidos rellenados con la referencia
+			const esc = new Escritor(segs.reduce((t, s) => t + (s.nbits >>> 3), 0) + 65536);
+			let preds = [0, 0, 0], cursorB = 0;
+			const franjas = [];
+			for (const s of usados) {
+				if (s.k0 >= s.k1) continue;
+				const bIni = s.bAbs + s.k0;
+				if (bIni > cursorB) {
+					const base = baseDC(f, s);
+					preds = puente(f, ref, cursorB, bIni, preds, [0, 1, 2].map((c) => s.P[c] + base[c]), esc);
+					franjas.push([cursorB, bIni]);
+				}
+				const finBit = s.k1 < s.n ? s.ini[s.k1] : s.fin;
+				esc.copiar(s.u, s.ini[s.k0], finBit);
+				const vistos = new Set();
+				for (let i = s.k1 - 1; i >= s.k0 && vistos.size < 3; i--) {
+					const c = f.slots[(s.s0 + i) % f.ns].c;
+					if (!vistos.has(c)) {
+						preds[c] = s.P[c] + s.dcs[i];
+						vistos.add(c);
+					}
+				}
+				cursorB = s.bAbs + s.k1;
+			}
+			if (cursorB < f.total) {
+				preds = puente(f, ref, cursorB, f.total, preds, null, esc);
+				franjas.push([cursorB, f.total]);
+			}
+			const datos = conRelleno(esc.terminar());
+
+			// 5) misma estructura que el archivo de la cámara: Exif, XMP, MPF y la vista previa interna al final
+			const mantener = !!mpf && limpio && validas.length > 0 && validas.every(Boolean);
+			if (mpf && !mantener) rep.avisos.push('la vista previa interna estaba dañada o incompleta y no se incluyó en el archivo');
+			const cab = f.segs.filter((s) => mantener || !mpf || s.i !== mpf.i);
+			const largoPrincipal = 2 + cab.reduce((t, s) => t + s.n, 0) + datos.length + 2;
+			const resto = mantener ? d.subarray(finPrincipal) : new Uint8Array(0);
+			const salida = new Uint8Array(largoPrincipal + resto.length);
+			salida[0] = 0xff;
+			salida[1] = 0xd8;
+			let p = 2, posMpf = -1;
+			for (const s of cab) {
+				if (mpf && s.i === mpf.i) posMpf = p;
+				salida.set(d.subarray(s.i, s.i + s.n), p);
+				p += s.n;
+			}
+			const iniSalida = p;
+			salida.set(datos, p);
+			p += datos.length;
+			salida[p++] = 0xff;
+			salida[p++] = 0xd9;
+			salida.set(resto, p);
+			if (mantener && posMpf >= 0) {
+				const dvS = new DataView(salida.buffer, salida.byteOffset, salida.byteLength);
+				const dvO = new DataView(d.buffer, d.byteOffset, d.byteLength);
+				const delta = largoPrincipal - finPrincipal;
+				mpf.ents.forEach((e, q) => {
+					if (q === 0) dvS.setUint32(posMpf + e.pos + 4, largoPrincipal, mpf.le);
+					else if (e.off) dvS.setUint32(posMpf + e.pos + 8, dvO.getUint32(mpf.i + e.pos + 8, mpf.le) + delta, mpf.le);
+				});
+			}
+
+			// 6) comprobar antes de entregar
+			const comp = comprobar(f, salida, iniSalida, iniSalida + datos.length, grids);
+			if (!comp.ok) throw new NoReparable('el resultado no superó la verificación de lectura completa');
+			const bandas = comp.bandas;
+			let peor = 0;
+			for (let q = 1; q < 20; q++) if (bandas[q] > bandas[peor]) peor = q;
+			if (bandas[peor] > Math.max(3 * mediana(bandas), 12)) {
+				rep.avisos.push(`la zona de las filas ${miles((peor * f.alto) / 20)}–${miles(((peor + 1) * f.alto) / 20)} difiere notablemente de la vista previa`);
+			}
+			const cambio = Math.max(...comp.medias.map(Math.abs));
+			if (cambio > 2) rep.avisos.push('el color general difiere ligeramente de la vista previa');
+			const perdidos = franjas.reduce((t, [a, b]) => t + (b - a), 0);
+			if (perdidos > 0.1 * f.total) rep.avisos.push(`se perdió el ${Math.round((100 * perdidos) / f.total)} % de la imagen; esa parte se reconstruyó con la ${origen}`);
+			const danado = zonas.reduce((t, [a, b]) => t + (b - a), 0);
+			if (!limpio) rep.notas.push('el archivo está incompleto: faltan los datos del final');
+			if (zonas.length) rep.notas.push(`datos dañados: ${miles(danado / 1024)} KB en ${zonas.length} zona(s), ${((100 * danado) / Math.max(1, finDatos - f.iniDatos)).toFixed(1)} % de la imagen`);
+			rep.franjas = franjas.map(([a, b]) => filasPx(f, a, b));
+			for (const [y0, y1] of rep.franjas) rep.notas.push(`zona reconstruida con la ${origen}: filas ${miles(y0)}–${miles(y1)} de ${miles(f.alto)}`);
+			rep.notas.push(`verificación: lectura completa; diferencia máxima por franja ${Math.max(...bandas).toFixed(1)} y variación de color ${cambio.toFixed(1)} (de 255)`);
+			rep.notas.push(rep.fecha ? 'conserva la fecha de captura original' : 'la foto no incluye fecha de captura');
+			rep.salida = salida;
+			rep.crc = crc32(salida);
+			rep.mini = comp.mini;
+			rep.estado = rep.avisos.length ? 'revisar' : 'reparada';
+		} catch (err) {
+			rep.estado = 'sinReparar';
+			rep.salida = null;
+			rep.notas.push(err instanceof NoReparable ? err.message : `error inesperado: ${err && err.message ? err.message : err}`);
+		}
+		rep.segundos = Math.round((Date.now() - t0) / 1000);
+		return rep;
+	}
+
+	return { reparar, infoRapida, crc32, NoReparable, _interno: { Foto, sinRelleno } };
+})();
+if (typeof module !== 'undefined' && module.exports) module.exports = MOTOR;
+</script>
+
+<script>
+(function () {
+	'use strict';
+	const MAX_LOTE = 100;
+	const MAX_BYTES = 300 * 1048576; // una foto de cámara pesa mucho menos; evita cargar archivos enormes en memoria
+	const MAX_ZIP = 3.9e9; // un ZIP sin extensiones de 64 bits no puede pasar de 4 GB
+	// Estados que devuelve el motor: carpeta donde se guarda cada uno, color, etiquetas y descripción de su pestaña
+	const SUB = { reparada: 'Reparadas', revisar: 'Por revisar', sinReparar: 'Sin reparar' };
+	const CLASE = { reparada: 'ok', revisar: 'alerta', sinReparar: 'error', sinDano: 'neutro' };
+	const ETIQ = { reparada: 'Reparada', revisar: 'Por revisar', sinReparar: 'Sin reparar', sinDano: 'Sin daño' };
+	const ETIQ_PLURAL = { reparada: 'Reparadas', revisar: 'Por revisar', sinReparar: 'Sin reparar', sinDano: 'Sin daño' };
+	const ESTADO_TILE = { reparada: 'reparada', revisar: 'revisar', sinReparar: 'error', sinDano: 'sindano' };
+	const EXPLICA = {
+		reparada: 'Fotos completas. La parte intacta es la original; la zona dañada se reconstruyó con la vista previa de la cámara.',
+		revisar: 'Se repararon, pero conviene revisarlas. Abre cada una para ver el motivo en el panel de detalles.',
+		sinReparar: 'Este método no aplica a estas fotos. Se guardó una copia del original para intentarlo con otra herramienta; aquí puedes ver el archivo tal como llegó y su vista previa interna.',
+		sinDano: 'Se abren completas: no necesitan reparación y no se copiaron.',
+	};
+	const puedeCarpeta = typeof window.showDirectoryPicker === 'function';
+	const $ = (s) => document.querySelector(s);
+	const ICONO = {
+		check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
+		alerta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 7v6M12 17h.01"/></svg>',
+		error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M7 7l10 10M17 7L7 17"/></svg>',
+		igual: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 10h12M6 14h12"/></svg>',
+		carpeta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+	};
+
+	const st = {
+		lote: [],
+		siguienteId: 1,
+		ultimoClic: null,
+		procesando: false,
+		detener: false,
+		carpeta: null,
+		resultados: [],
+		pestana: 'reparada',
+		sesion: null,
+		zip: null,
+	};
+
+	// ---------- utilidades
+	function aviso(texto) {
+		const t = document.createElement('div');
+		t.className = 'toast';
+		t.textContent = texto;
+		$('#toasts').appendChild(t);
+		setTimeout(() => t.remove(), 5200);
+	}
+	function tamano(b) {
+		return b >= 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`;
+	}
+	function tiempo(seg) {
+		if (!isFinite(seg)) return '—';
+		seg = Math.max(0, Math.round(seg));
+		if (seg < 60) return `${seg} s`;
+		const m = Math.floor(seg / 60), s = seg % 60;
+		return s ? `${m} min ${s} s` : `${m} min`;
+	}
+	function nombreValido(t) {
+		return t.trim().length > 0 && !/[\/\\:*?"<>|\u0000-\u001f]/.test(t) && t.trim() !== '.' && t.trim() !== '..';
+	}
+	function el(tag, clase, html) {
+		const e = document.createElement(tag);
+		if (clase) e.className = clase;
+		if (html != null) e.innerHTML = html;
+		return e;
+	}
+
+	// ---------- lote de fotos
+	async function agregar(lista) {
+		if (st.procesando) return;
+		if (st.resultados.length) limpiarResultados();
+		const archivos = [...lista].filter((a) => /\.jpe?g$/i.test(a.name) || a.type === 'image/jpeg');
+		const ignorados = lista.length - archivos.length;
+		let agregadas = 0, repetidas = 0, fuera = 0, grandes = 0;
+		for (const a of archivos) {
+			if (a.size > MAX_BYTES) {
+				grandes++;
+				continue;
+			}
+			if (st.lote.some((x) => x.archivo.name === a.name && x.archivo.size === a.size && x.archivo.lastModified === a.lastModified)) {
+				repetidas++;
+				continue;
+			}
+			if (st.lote.length >= MAX_LOTE) {
+				fuera++;
+				continue;
+			}
+			const item = { id: st.siguienteId++, archivo: a, sel: false, estado: 'pendiente', mini: null, nodo: null };
+			st.lote.push(item);
+			agregadas++;
+			cargarMiniatura(item);
+		}
+		const partes = [];
+		const uno = (n, singular, plural) => `${n} ${n === 1 ? singular : plural}`;
+		if (fuera) partes.push(uno(fuera, `excedía el límite de ${MAX_LOTE} fotos por lote`, `excedían el límite de ${MAX_LOTE} fotos por lote`));
+		if (grandes) partes.push(uno(grandes, 'supera el límite de 300 MB por archivo', 'superan el límite de 300 MB por archivo'));
+		if (repetidas) partes.push(uno(repetidas, 'ya estaba en el lote', 'ya estaban en el lote'));
+		if (ignorados) partes.push(uno(ignorados, 'no es un archivo JPG', 'no son archivos JPG'));
+		if (partes.length) aviso(`${agregadas === 1 ? 'Se agregó 1' : `Se agregaron ${agregadas}`}. ${partes.join('; ')}.`);
+		dibujarLote();
+	}
+
+	async function cargarMiniatura(item) {
+		try {
+			const inicio = new Uint8Array(await item.archivo.slice(0, 262144).arrayBuffer());
+			const info = MOTOR.infoRapida(inicio);
+			if (info && info.mini) item.mini = URL.createObjectURL(new Blob([info.mini], { type: 'image/jpeg' }));
+		} catch (e) {
+			/* se usa el archivo completo */
+		}
+		if (!item.mini) item.mini = URL.createObjectURL(item.archivo);
+		if (item.nodo) item.nodo.querySelector('img').src = item.mini;
+	}
+
+	function nodoFoto(item) {
+		const li = el('li', 'foto');
+		li.dataset.id = item.id;
+		const btn = el('button', 'foto-btn');
+		btn.type = 'button';
+		btn.setAttribute('aria-pressed', 'false');
+		btn.title = item.archivo.name;
+		btn.innerHTML = `<span class="marco"><img alt="" loading="lazy" decoding="async"></span><span class="check" aria-hidden="true">${ICONO.check}</span><span class="estado-icono" aria-hidden="true"></span>`;
+		btn.setAttribute('aria-label', `${item.archivo.name}, seleccionar`);
+		btn.addEventListener('click', (ev) => alternar(item, ev.shiftKey));
+		if (item.mini) btn.querySelector('img').src = item.mini;
+		li.append(btn, el('span', 'foto-nombre'), el('span', 'foto-meta'));
+		li.querySelector('.foto-nombre').textContent = item.archivo.name;
+		li.querySelector('.foto-meta').textContent = tamano(item.archivo.size);
+		item.nodo = li;
+		return li;
+	}
+
+	function pintarEstado(item) {
+		if (!item.nodo) return;
+		const btn = item.nodo.querySelector('.foto-btn');
+		btn.setAttribute('aria-pressed', item.sel ? 'true' : 'false');
+		const icono = item.nodo.querySelector('.estado-icono');
+		let e = item.estado;
+		if (e === 'pendiente' && st.procesando) e = 'pendiente-proc';
+		item.nodo.dataset.estado = e;
+		icono.innerHTML = e === 'procesando' ? '<span class="giro"></span>' : e === 'reparada' ? ICONO.check : e === 'revisar' ? ICONO.alerta : e === 'error' ? ICONO.error : e === 'sindano' ? ICONO.igual : '';
+	}
+
+	function dibujarLote() {
+		const ul = $('#rejilla');
+		const vivos = new Set(st.lote.map((x) => x.id));
+		[...ul.children].forEach((li) => {
+			if (!vivos.has(Number(li.dataset.id))) li.remove();
+		});
+		st.lote.forEach((item, i) => {
+			const li = item.nodo || nodoFoto(item);
+			if (ul.children[i] !== li) ul.insertBefore(li, ul.children[i] || null);
+			pintarEstado(item);
+		});
+		actualizarControles();
+	}
+
+	function alternar(item, rango) {
+		if (st.procesando) return;
+		if (rango && st.ultimoClic !== null) {
+			const a = st.lote.findIndex((x) => x.id === st.ultimoClic), b = st.lote.findIndex((x) => x.id === item.id);
+			if (a >= 0 && b >= 0) {
+				const valor = !item.sel;
+				for (let k = Math.min(a, b); k <= Math.max(a, b); k++) st.lote[k].sel = valor;
+			}
+		} else {
+			item.sel = !item.sel;
+		}
+		st.ultimoClic = item.id;
+		st.lote.forEach(pintarEstado);
+		actualizarControles();
+	}
+
+	function quitar(items) {
+		// igual que al agregar: si el lote cambia, los resultados anteriores se cierran (usan las miniaturas del lote)
+		if (st.resultados.length) limpiarResultados();
+		const fuera = new Set(items.map((x) => x.id));
+		for (const x of items) if (x.mini) URL.revokeObjectURL(x.mini);
+		st.lote = st.lote.filter((x) => !fuera.has(x.id));
+		dibujarLote();
+	}
+
+	function actualizarControles() {
+		const n = st.lote.length;
+		const sel = st.lote.filter((x) => x.sel).length;
+		$('#cuenta-lote').textContent = `${n} de ${MAX_LOTE}`;
+		$('#zona-vacia').classList.toggle('oculto', n > 0);
+		$('#rejilla').classList.toggle('oculto', n === 0);
+		$('#herr-lote').classList.toggle('oculto', n === 0);
+		$('#btn-quitar').disabled = st.procesando || sel === 0;
+		$('#btn-quitar').textContent = sel ? `Quitar seleccionadas (${sel})` : 'Quitar seleccionadas';
+		$('#btn-sel').textContent = n && sel === n ? 'Quitar selección' : 'Seleccionar todas';
+		for (const id of ['#btn-sel', '#btn-vaciar', '#btn-mas', '#btn-elegir']) $(id).disabled = st.procesando;
+		$('#btn-mas').disabled = st.procesando || n >= MAX_LOTE;
+		const guardar = modoGuardar();
+		const listo = n > 0 && !st.procesando && (guardar === 'zip' || st.carpeta) && nombresValidos();
+		$('#btn-reparar').disabled = !listo;
+		$('#btn-reparar').textContent = n ? `Reparar ${n} foto${n === 1 ? '' : 's'}` : 'Reparar fotos';
+		let resumen = n ? `${n} foto${n === 1 ? '' : 's'} en el lote` : 'Agrega fotos para empezar.';
+		if (n && guardar === 'carpeta' && !st.carpeta) resumen += ' · elige una carpeta de destino';
+		if (n && !nombresValidos()) resumen += ' · revisa los nombres';
+		if (st.procesando) resumen = 'Reparando…';
+		$('#resumen-accion').textContent = resumen;
+		document.querySelectorAll('input[name="guardar"], input[name="nombre"], #prefijo, #nombre-carpeta, #btn-carpeta').forEach((x) => (x.disabled = st.procesando));
+		if (!puedeCarpeta) $('#btn-carpeta').disabled = true;
+	}
+
+	// ---------- opciones
+	function modoGuardar() {
+		const r = document.querySelector('input[name="guardar"]:checked');
+		return r ? r.value : 'zip';
+	}
+	function modoNombre() {
+		return document.querySelector('input[name="nombre"]:checked').value;
+	}
+	function nombresValidos() {
+		const okCarpeta = nombreValido($('#nombre-carpeta').value);
+		const okPrefijo = modoNombre() === 'original' || nombreValido($('#prefijo').value);
+		$('#nombre-carpeta').classList.toggle('malo', !okCarpeta);
+		$('#prefijo').classList.toggle('malo', modoNombre() === 'numero' && !okPrefijo);
+		return okCarpeta && okPrefijo;
+	}
+	function actualizarOpciones() {
+		const raiz = $('#nombre-carpeta').value.trim() || 'Imágenes recuperadas';
+		$('#arbol-raiz').textContent = raiz;
+		const p = $('#prefijo').value.trim();
+		$('#ejemplo-nombre').innerHTML = nombreValido(p)
+			? `Ejemplo: <code></code>, <code></code>…`
+			: 'El prefijo no puede contener / \\ : * ? " < > |';
+		if (nombreValido(p)) {
+			const c = $('#ejemplo-nombre').querySelectorAll('code');
+			c[0].textContent = `${p}_1.jpg`;
+			c[1].textContent = `${p}_2.jpg`;
+		}
+		$('#nota-fechas').classList.toggle('oculto', modoGuardar() !== 'carpeta');
+		actualizarControles();
+	}
+
+	async function elegirCarpeta() {
+		if (!puedeCarpeta) return;
+		try {
+			const h = await window.showDirectoryPicker({ id: 'reparar-fotos', mode: 'readwrite', startIn: 'pictures' });
+			st.carpeta = h;
+			$('#carpeta-elegida').innerHTML = `${ICONO.carpeta}<span></span>`;
+			$('#carpeta-elegida span').textContent = h.name;
+			$('#carpeta-elegida').classList.remove('oculto');
+			document.querySelector('input[name="guardar"][value="carpeta"]').checked = true;
+		} catch (e) {
+			if (e && e.name !== 'AbortError') aviso(`Esa carpeta no está disponible: ${e.message}`);
+		}
+		actualizarOpciones();
+	}
+
+	// ---------- proceso
+	function codigoTrabajador() {
+		return `${document.getElementById('motor').textContent}\n;(${trabajador.toString()})();`;
+	}
+
+	// Se ejecuta dentro de cada proceso de fondo
+	function trabajador() {
+		async function decodificarNavegador(bytes) {
+			const blob = new Blob([bytes], { type: 'image/jpeg' });
+			let bmp;
+			try {
+				bmp = await createImageBitmap(blob, { imageOrientation: 'none', colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
+			} catch (e) {
+				bmp = await createImageBitmap(blob);
+			}
+			const c = new OffscreenCanvas(bmp.width, bmp.height);
+			const ctx = c.getContext('2d');
+			ctx.drawImage(bmp, 0, 0);
+			const px = ctx.getImageData(0, 0, bmp.width, bmp.height).data;
+			const n = bmp.width * bmp.height;
+			const Y = new Uint8Array(n), Cb = new Uint8Array(n), Cr = new Uint8Array(n);
+			for (let k = 0, o = 0; k < n; k++, o += 4) {
+				const r = px[o], g = px[o + 1], b = px[o + 2];
+				Y[k] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+				Cb[k] = Math.max(0, Math.min(255, Math.round(128 - 0.168736 * r - 0.331264 * g + 0.5 * b)));
+				Cr[k] = Math.max(0, Math.min(255, Math.round(128 + 0.5 * r - 0.418688 * g - 0.081312 * b)));
+			}
+			return { ancho: bmp.width, alto: bmp.height, planos: [Y, Cb, Cr] };
+		}
+		async function aJPG(mini) {
+			if (!mini || typeof OffscreenCanvas === 'undefined') return null;
+			const c = new OffscreenCanvas(mini.w, mini.h);
+			c.getContext('2d').putImageData(new ImageData(mini.rgba, mini.w, mini.h), 0, 0);
+			return c.convertToBlob({ type: 'image/jpeg', quality: 0.88 });
+		}
+		self.onmessage = async (e) => {
+			const { id, archivo } = e.data;
+			try {
+				const r = await MOTOR.reparar(new Uint8Array(await archivo.arrayBuffer()), { decodificarNavegador });
+				let miniatura = null;
+				try {
+					miniatura = await aJPG(r.mini);
+				} catch (err) {
+					miniatura = null;
+				}
+				self.postMessage({
+					id,
+					ok: true,
+					estado: r.estado,
+					notas: r.notas,
+					avisos: r.avisos,
+					salida: r.salida ? new Blob([r.salida], { type: 'image/jpeg' }) : null,
+					crc: r.crc,
+					fecha: r.fecha,
+					franjas: r.franjas,
+					ancho: r.ancho,
+					alto: r.alto,
+					miniatura,
+					previa: r.previa ? new Blob([r.previa], { type: 'image/jpeg' }) : null,
+					segundos: r.segundos,
+				});
+			} catch (err) {
+				self.postMessage({ id, ok: false, error: String((err && err.message) || err) });
+			}
+		};
+	}
+
+	async function iniciar() {
+		if (st.procesando || !st.lote.length) return;
+		const guardarEn = modoGuardar();
+		if (!nombresValidos()) return aviso('Revisa los nombres: no pueden contener / \\ : * ? " < > |');
+		const nombreCarpeta = $('#nombre-carpeta').value.trim();
+		if (guardarEn === 'zip') {
+			const peso = st.lote.reduce((t, x) => t + x.archivo.size, 0);
+			if (peso > MAX_ZIP) return aviso(`Este lote ocupa ${(peso / 1e9).toFixed(1)} GB y un ZIP admite hasta 4 GB. Guarda los resultados en una carpeta o divide el lote.`);
+		}
+		const sesion = {
+			guardarEn,
+			nombreCarpeta,
+			modoNombre: modoNombre(),
+			prefijo: $('#prefijo').value.trim(),
+			destino: null,
+			zip: [],
+			usados: { reparada: new Set(), revisar: new Set(), sinReparar: new Set() },
+			numero: 1,
+			total: st.lote.length,
+			hechas: 0,
+			guardadas: 0,
+			proximo: 0,
+			cadena: Promise.resolve(),
+			enCurso: new Set(),
+			t0: performance.now(),
+			fallos: 0,
+		};
+		if (guardarEn === 'carpeta') {
+			if (!st.carpeta) return aviso('Elige una carpeta de destino.');
+			try {
+				let permiso = await st.carpeta.queryPermission({ mode: 'readwrite' });
+				if (permiso !== 'granted') permiso = await st.carpeta.requestPermission({ mode: 'readwrite' });
+				if (permiso !== 'granted') return aviso('El navegador no concedió permiso para guardar en esa carpeta.');
+				const raiz = await st.carpeta.getDirectoryHandle(nombreCarpeta, { create: true });
+				sesion.destino = { raiz, subs: {} };
+				for (const [estado, nombre] of Object.entries(SUB)) sesion.destino.subs[estado] = await raiz.getDirectoryHandle(nombre, { create: true });
+			} catch (e) {
+				return aviso(`Error al preparar la carpeta: ${e.message}`);
+			}
+		}
+		limpiarResultados();
+		st.sesion = sesion;
+		st.procesando = true;
+		st.detener = false;
+		st.resultados = new Array(sesion.total).fill(null);
+		st.lote.forEach((x) => {
+			x.estado = 'pendiente';
+			x.sel = false;
+			pintarEstado(x);
+		});
+		$('#progreso').classList.remove('oculto');
+		$('#btn-detener').disabled = false;
+		$('#t-prog').textContent = 'Reparando…';
+		actualizarControles();
+		dibujarProgreso();
+		$('#progreso').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+		const url = URL.createObjectURL(new Blob([codigoTrabajador()], { type: 'text/javascript' }));
+		const cuantos = Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 4) - 1, sesion.total));
+		const procesos = [];
+		let siguiente = 0, activos = 0;
+		await new Promise((terminar) => {
+			const dar = (w) => {
+				if (st.detener || siguiente >= sesion.total) {
+					if (activos === 0) terminar();
+					return;
+				}
+				const i = siguiente++;
+				const item = st.lote[i];
+				item.estado = 'procesando';
+				pintarEstado(item);
+				sesion.enCurso.add(i);
+				activos++;
+				w.tarea = i;
+				w.postMessage({ id: i, archivo: item.archivo });
+				dibujarProgreso();
+			};
+			for (let k = 0; k < cuantos; k++) {
+				const w = new Worker(url);
+				w.onmessage = (e) => {
+					activos--;
+					recibir(e.data);
+					dar(w);
+				};
+				w.onerror = (e) => {
+					e.preventDefault();
+					activos--;
+					recibir({ id: w.tarea, ok: false, error: e.message || 'falló el proceso de reparación' });
+					dar(w);
+				};
+				procesos.push(w);
+				dar(w);
+			}
+		});
+		procesos.forEach((w) => w.terminate());
+		URL.revokeObjectURL(url);
+		await sesion.cadena;
+		await cerrarSesion(sesion);
+	}
+
+	function recibir(m) {
+		const sesion = st.sesion;
+		const item = st.lote[m.id];
+		sesion.enCurso.delete(m.id);
+		const r = m.ok
+			? m
+			: { estado: 'sinReparar', notas: [`error inesperado: ${m.error}`], avisos: [], salida: null, franjas: [], previa: null, miniatura: null, fecha: null };
+		r.item = item;
+		r.indice = m.id;
+		st.resultados[m.id] = r;
+		item.estado = ESTADO_TILE[r.estado] || 'error';
+		pintarEstado(item);
+		sesion.hechas++;
+		sesion.cadena = sesion.cadena.then(() => guardarEnOrden(sesion));
+		dibujarProgreso();
+	}
+
+	// Se guardan en el orden del lote para que la numeración siga ese orden
+	async function guardarEnOrden(sesion) {
+		while (sesion.proximo < sesion.total && st.resultados[sesion.proximo]) {
+			const r = st.resultados[sesion.proximo];
+			try {
+				await guardar(r, sesion);
+			} catch (e) {
+				r.avisos = [...(r.avisos || []), `error al guardar: ${e.message}`];
+				sesion.fallos++;
+			}
+			sesion.proximo++;
+			sesion.guardadas++;
+			agregarResultado(r);
+			dibujarProgreso();
+		}
+	}
+
+	async function existe(dir, nombre) {
+		try {
+			await dir.getFileHandle(nombre);
+			return true;
+		} catch (e) {
+			if (e && (e.name === 'NotFoundError' || e.name === 'TypeMismatchError')) return e.name === 'TypeMismatchError';
+			throw e;
+		}
+	}
+
+	async function ocupado(sesion, estado, nombre) {
+		if (sesion.usados[estado].has(nombre.toLowerCase())) return true;
+		return sesion.destino ? existe(sesion.destino.subs[estado], nombre) : false;
+	}
+
+	// Nombre válido en Windows, macOS y Linux y sin partes de ruta: al descomprimir el ZIP en otro sistema,
+	// un nombre con \ o : no puede escribir fuera de la carpeta de resultados
+	function nombreSeguro(n) {
+		let s = n.replace(/[\/\\:*?"<>|\u0000-\u001f\u007f]/g, '_').replace(/[. ]+$/, '');
+		if (!s.replace(/\./g, '')) s = 'foto';
+		if (/^(con|prn|aux|nul|com\d|lpt\d)(\.|$)/i.test(s)) s = `_${s}`;
+		return s;
+	}
+
+	async function nombreLibre(r, sesion) {
+		const original = nombreSeguro(r.item.archivo.name);
+		const m = original.match(/\.[^.]+$/);
+		const ext = m ? m[0] : '.jpg';
+		// las fotos sin reparar son copias del original: conservan su nombre para identificarlas
+		if (sesion.modoNombre === 'numero' && r.estado !== 'sinReparar') {
+			for (;;) {
+				const n = `${sesion.prefijo}_${sesion.numero++}${ext.toLowerCase()}`;
+				let libre = true;
+				for (const estado of Object.keys(SUB)) if (await ocupado(sesion, estado, n)) libre = false;
+				if (libre) return n;
+			}
+		}
+		const base = m ? original.slice(0, original.length - ext.length) : original;
+		r.nombrePrimero = `${base}${ext}`;
+		for (let k = 1; ; k++) {
+			const n = k === 1 ? `${base}${ext}` : `${base} (${k})${ext}`;
+			if (!(await ocupado(sesion, r.estado, n))) return n;
+		}
+	}
+
+	async function guardar(r, sesion) {
+		if (!SUB[r.estado]) return;
+		const blob = r.estado === 'sinReparar' ? r.item.archivo : r.salida;
+		const nombre = await nombreLibre(r, sesion);
+		sesion.usados[r.estado].add(nombre.toLowerCase());
+		if (sesion.destino) {
+			const fh = await sesion.destino.subs[r.estado].getFileHandle(nombre, { create: true });
+			const w = await fh.createWritable();
+			await w.write(blob);
+			await w.close();
+		} else {
+			sesion.zip.push({ ruta: `${sesion.nombreCarpeta}/${SUB[r.estado]}/${nombre}`, blob, crc: r.estado === 'sinReparar' ? null : r.crc, fecha: r.fecha || { ms: r.item.archivo.lastModified, local: null } });
+		}
+		r.nombreFinal = nombre;
+		r.ruta = `${sesion.nombreCarpeta}/${SUB[r.estado]}/${nombre}`;
+		if (nombre !== r.item.archivo.name && (sesion.modoNombre === 'original' || r.estado === 'sinReparar')) {
+			r.notas = [...r.notas, nombre === r.nombrePrimero
+				? `se guardó como «${nombre}» para que el nombre sea válido en cualquier sistema`
+				: `ya existía un archivo con ese nombre; se guardó como «${nombre}» para no sobrescribirlo`];
+		}
+	}
+
+	function textoReporte(sesion) {
+		const ahora = new Date();
+		const fecha = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')} ${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+		const lineas = [`\nReparación del ${fecha} (${sesion.guardadas} de ${sesion.total} fotos procesadas)`];
+		for (const r of st.resultados) {
+			if (!r) continue;
+			const destino = r.ruta ? ` → ${r.ruta.split('/').slice(1).join('/')}` : '';
+			lineas.push(`${r.item.archivo.name}${destino}: ${ETIQ[r.estado].toLowerCase()}`);
+			for (const x of r.notas || []) lineas.push(`  - ${x}`);
+			for (const x of r.avisos || []) lineas.push(`  - revisar: ${x}`);
+		}
+		const sin = st.resultados.filter((r) => !r).length;
+		if (sin) lineas.push(`${sin} foto(s) quedaron sin procesar porque el proceso se detuvo.`);
+		return lineas.join('\n') + '\n';
+	}
+
+	async function cerrarSesion(sesion) {
+		const texto = textoReporte(sesion);
+		try {
+			if (sesion.destino) {
+				const fh = await sesion.destino.raiz.getFileHandle('reporte.txt', { create: true });
+				const actual = await fh.getFile();
+				const w = await fh.createWritable({ keepExistingData: true });
+				await w.seek(actual.size);
+				await w.write(texto);
+				await w.close();
+			} else {
+				sesion.zip.push({ ruta: `${sesion.nombreCarpeta}/reporte.txt`, blob: new Blob([texto.trimStart()], { type: 'text/plain' }), crc: null, fecha: { ms: Date.now(), local: null } });
+				if (sesion.zip.length) {
+					st.zip = { blob: await crearZip(sesion.zip), nombre: `${sesion.nombreCarpeta}.zip` };
+					descargarZip();
+				}
+			}
+		} catch (e) {
+			aviso(`Error al escribir el reporte: ${e.message}`);
+		}
+		st.procesando = false;
+		const detenido = st.detener;
+		st.detener = false;
+		st.lote.forEach(pintarEstado);
+		$('#progreso').classList.add('oculto');
+		actualizarControles();
+		mostrarResultados();
+		celebrar(sesion, detenido);
+	}
+
+	function descargarZip() {
+		if (!st.zip) return;
+		const a = document.createElement('a');
+		a.href = URL.createObjectURL(st.zip.blob);
+		a.download = st.zip.nombre;
+		document.body.appendChild(a);
+		a.click();
+		a.remove();
+		setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+	}
+
+	function dibujarProgreso() {
+		const s = st.sesion;
+		if (!s) return;
+		const pct = s.total ? Math.floor((s.guardadas / s.total) * 100) : 0;
+		$('#prog-pct').textContent = `${pct} %`;
+		$('#prog-barra').style.width = `${pct}%`;
+		$('#prog-rol').setAttribute('aria-valuenow', String(pct));
+		const enCurso = [...s.enCurso].sort((a, b) => a - b);
+		$('#prog-va').textContent = s.guardadas >= s.total ? `${s.total} de ${s.total}` : `${Math.min(s.total, (enCurso.length ? enCurso[0] : s.hechas) + 1)} de ${s.total}`;
+		$('#prog-hechas').textContent = String(s.guardadas);
+		$('#prog-faltan').textContent = String(s.total - s.guardadas);
+		const seg = (performance.now() - s.t0) / 1000;
+		const resta = (seg / Math.max(1, s.hechas)) * (s.total - s.hechas);
+		// ya se repararon todas, pero aún se están escribiendo en disco
+		const guardando = s.hechas >= s.total && s.guardadas < s.total;
+		$('#prog-eta').textContent = guardando ? 'guardando…' : s.hechas < 2 ? 'calculando…' : s.hechas < s.total && resta < 1 ? 'unos segundos' : tiempo(resta);
+		$('#prog-ahora').textContent = enCurso.length ? `En proceso: ${enCurso.map((i) => st.lote[i].archivo.name).join(', ')}` : st.detener ? 'Finalizando las fotos en proceso…' : guardando ? 'Guardando los resultados…' : '';
+	}
+
+	// ---------- resultados
+	function limpiarResultados() {
+		for (const r of st.resultados) {
+			if (!r) continue;
+			for (const k of ['urlMini', 'urlSalida', 'urlPrevia', 'urlOriginal']) if (r[k]) URL.revokeObjectURL(r[k]);
+		}
+		st.resultados = [];
+		st.zip = null;
+		$('#rejilla-res').innerHTML = '';
+		$('#resultados').classList.add('oculto');
+	}
+
+	function urlMini(r) {
+		const b = r.miniatura || r.previa;
+		// sin miniatura propia se usa la del lote, que no es de este resultado: no se guarda para no liberarla al limpiar
+		if (!b) return r.item.mini;
+		if (!r.urlMini) r.urlMini = URL.createObjectURL(b);
+		return r.urlMini;
+	}
+
+	function agregarResultado(r) {
+		$('#resultados').classList.remove('oculto');
+		contarPestanas();
+		if (r.estado === st.pestana) $('#rejilla-res').appendChild(nodoResultado(r));
+		$('#explica').textContent = EXPLICA[st.pestana];
+		vacioResultados();
+	}
+
+	function nodoResultado(r) {
+		const li = el('li', 'foto');
+		const btn = el('button', 'foto-btn');
+		btn.type = 'button';
+		btn.innerHTML = `<span class="marco"><img alt="" loading="lazy" decoding="async"></span><span class="chip ${CLASE[r.estado]}">${ETIQ[r.estado]}</span>`;
+		btn.querySelector('img').src = urlMini(r);
+		btn.setAttribute('aria-label', `Ver ${r.nombreFinal || r.item.archivo.name}`);
+		btn.addEventListener('click', () => abrirVisor(r));
+		const nombre = el('span', 'foto-nombre');
+		nombre.textContent = r.nombreFinal || r.item.archivo.name;
+		const meta = el('span', 'foto-meta');
+		meta.textContent = r.nombreFinal && r.nombreFinal !== r.item.archivo.name ? `Original: ${r.item.archivo.name}` : r.estado === 'sinDano' ? 'sin copia' : tamano(r.salida ? r.salida.size : r.item.archivo.size);
+		li.append(btn, nombre, meta);
+		return li;
+	}
+
+	function delEstado(estado) {
+		return st.resultados.filter((r) => r && r.estado === estado && (r.ruta || estado === 'sinDano'));
+	}
+
+	function contarPestanas() {
+		$('#n-reparada').textContent = delEstado('reparada').length;
+		$('#n-revisar').textContent = delEstado('revisar').length;
+		$('#n-error').textContent = delEstado('sinReparar').length;
+		$('#n-sindano').textContent = delEstado('sinDano').length;
+		$('#btn-reintentar').disabled = st.procesando || delEstado('sinReparar').length === 0;
+	}
+
+	function vacioResultados() {
+		const ul = $('#rejilla-res');
+		const hay = delEstado(st.pestana).length;
+		let vacio = $('#vacio-res');
+		if (!hay && !vacio) {
+			vacio = el('div', 'vacio-res');
+			vacio.id = 'vacio-res';
+			vacio.textContent = 'No hay fotos en este grupo.';
+			ul.after(vacio);
+		} else if (hay && vacio) vacio.remove();
+	}
+
+	function mostrarResultados() {
+		const s = st.sesion;
+		$('#resultados').classList.remove('oculto');
+		$('#res-destino').textContent = s ? (s.destino ? `Guardadas en ${st.carpeta.name}/${s.nombreCarpeta}` : `Descargadas en ${s.nombreCarpeta}.zip`) : '';
+		$('#btn-zip-otra').hidden = !st.zip;
+		// abre el grupo que más atención necesita
+		const orden = ['sinReparar', 'revisar', 'reparada', 'sinDano'];
+		if (!delEstado(st.pestana).length) st.pestana = orden.find((e) => delEstado(e).length) || 'reparada';
+		cambiarPestana(st.pestana);
+	}
+
+	function cambiarPestana(p) {
+		st.pestana = p;
+		document.querySelectorAll('.pestana').forEach((b) => b.setAttribute('aria-selected', b.dataset.p === p ? 'true' : 'false'));
+		const ul = $('#rejilla-res');
+		ul.innerHTML = '';
+		for (const r of delEstado(p)) ul.appendChild(nodoResultado(r));
+		$('#explica').textContent = EXPLICA[p];
+		contarPestanas();
+		vacioResultados();
+	}
+
+	// ---------- visor
+	const visor = { lista: [], i: 0, real: false };
+
+	function abrirVisor(r) {
+		visor.lista = delEstado(r.estado);
+		visor.i = Math.max(0, visor.lista.indexOf(r));
+		visor.real = false;
+		mostrarEnVisor();
+		const dlg = $('#visor');
+		if (!dlg.open) dlg.showModal();
+	}
+
+	function figura(url, titulo, franjas, alto) {
+		const fig = el('figure');
+		const env = el('div', 'envoltura');
+		const img = el('img');
+		img.alt = titulo || '';
+		img.src = url;
+		img.addEventListener('click', () => {
+			visor.real = !visor.real;
+			$('#lienzo').classList.toggle('real', visor.real);
+			$('#visor-zoom').textContent = visor.real ? 'Ajustar a la ventana' : 'Tamaño real';
+		});
+		env.appendChild(img);
+		for (const [y0, y1] of franjas || []) {
+			const fr = el('div', 'franja');
+			fr.style.top = `${(100 * y0) / alto}%`;
+			fr.style.height = `${Math.max(0.4, (100 * (y1 - y0)) / alto)}%`;
+			env.appendChild(fr);
+		}
+		fig.appendChild(env);
+		if (titulo) {
+			const cap = el('figcaption');
+			cap.textContent = titulo;
+			fig.appendChild(cap);
+		}
+		return fig;
+	}
+
+	function mostrarEnVisor() {
+		const r = visor.lista[visor.i];
+		if (!r) return;
+		const lienzo = $('#lienzo');
+		lienzo.innerHTML = '';
+		lienzo.classList.toggle('real', visor.real);
+		lienzo.classList.toggle('con-franja', $('#visor-franja').checked);
+		$('#visor-zoom').textContent = visor.real ? 'Ajustar a la ventana' : 'Tamaño real';
+		const chip = $('#visor-chip');
+		chip.className = `chip ${CLASE[r.estado]}`;
+		chip.textContent = ETIQ[r.estado];
+		$('#visor-nombre').textContent = r.nombreFinal || r.item.archivo.name;
+		$('#visor-pos').textContent = `${visor.i + 1} de ${visor.lista.length}`;
+		$('#visor-ant').disabled = visor.i === 0;
+		$('#visor-sig').disabled = visor.i >= visor.lista.length - 1;
+		const conFranjas = r.salida && r.franjas && r.franjas.length;
+		$('#visor-franja-et').classList.toggle('oculto', !conFranjas);
+		if (r.salida) {
+			if (!r.urlSalida) r.urlSalida = URL.createObjectURL(r.salida);
+			lienzo.appendChild(figura(r.urlSalida, '', r.franjas, r.alto));
+		} else {
+			if (!r.urlOriginal) r.urlOriginal = URL.createObjectURL(r.item.archivo);
+			lienzo.appendChild(figura(r.urlOriginal, r.estado === 'sinDano' ? 'Foto original' : 'Archivo original, tal como llegó'));
+			if (r.previa && r.estado !== 'sinDano') {
+				if (!r.urlPrevia) r.urlPrevia = URL.createObjectURL(r.previa);
+				lienzo.appendChild(figura(r.urlPrevia, 'Vista previa interna de la cámara'));
+			}
+		}
+		const info = $('#visor-info');
+		info.innerHTML = '';
+		const sec = (titulo, nodo) => {
+			const h = el('h3');
+			h.textContent = titulo;
+			info.append(h, nodo);
+		};
+		const p = el('div');
+		p.textContent = r.item.archivo.name;
+		sec('Archivo original', p);
+		if (r.ruta) {
+			const ruta = el('div', 'ruta');
+			ruta.textContent = r.ruta;
+			sec(r.estado === 'sinReparar' ? 'Copia guardada en' : 'Guardada en', ruta);
+		} else if (r.estado === 'sinDano') {
+			const t = el('div', 'muted');
+			t.textContent = 'No se copió porque no tiene daños.';
+			sec('Guardada en', t);
+		}
+		if (r.avisos && r.avisos.length) {
+			const ul = el('ul', 'avisos-lista');
+			for (const x of r.avisos) {
+				const li = el('li');
+				li.textContent = x;
+				ul.appendChild(li);
+			}
+			sec('Puntos a revisar', ul);
+		}
+		if (r.notas && r.notas.length) {
+			const ul = el('ul');
+			for (const x of r.notas) {
+				const li = el('li');
+				li.textContent = x;
+				ul.appendChild(li);
+			}
+			sec('Detalles', ul);
+		}
+		if (r.estado === 'sinReparar') {
+			const t = el('p', 'muted pequeno');
+			t.textContent = `La copia del original está en la carpeta «Sin reparar». Puedes intentarlo con otra herramienta${r.previa ? ' o guardar la vista previa interna (clic derecho → Guardar imagen como)' : ''}.`;
+			info.appendChild(t);
+		}
+	}
+
+	function moverVisor(d) {
+		const n = visor.i + d;
+		if (n < 0 || n >= visor.lista.length) return;
+		visor.i = n;
+		mostrarEnVisor();
+	}
+
+	// ---------- animación final
+	function celebrar(sesion, detenido) {
+		const c = {
+			reparada: delEstado('reparada').length,
+			revisar: delEstado('revisar').length,
+			sinReparar: delEstado('sinReparar').length,
+			sinDano: delEstado('sinDano').length,
+		};
+		$('#fin-titulo').textContent = detenido ? 'Proceso detenido' : 'Proceso completado';
+		const destino = sesion.destino ? `en «${st.carpeta.name}/${sesion.nombreCarpeta}»` : `en el ZIP «${sesion.nombreCarpeta}.zip»`;
+		$('#fin-texto').textContent = `${sesion.guardadas} de ${sesion.total} fotos procesadas. Los resultados están ${destino}.${sesion.fallos ? ` ${sesion.fallos === 1 ? '1 foto no se guardó' : `${sesion.fallos} fotos no se guardaron`} por un error de escritura.` : ''}`;
+		const conteo = $('#fin-conteo');
+		conteo.innerHTML = '';
+		for (const [estado, n] of Object.entries(c)) {
+			const d = el('div');
+			d.innerHTML = `<strong></strong><span class="punto ${CLASE[estado]}"></span><span></span>`;
+			d.querySelector('strong').textContent = n;
+			d.querySelectorAll('span')[1].textContent = ETIQ_PLURAL[estado];
+			conteo.appendChild(d);
+		}
+		const fin = $('#fin');
+		fin.hidden = false;
+		$('#fin-ver').focus();
+		if (!detenido && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) confeti();
+	}
+
+	function confeti() {
+		const cv = $('#confeti');
+		const ctx = cv.getContext('2d');
+		const dpr = window.devicePixelRatio || 1;
+		cv.width = innerWidth * dpr;
+		cv.height = innerHeight * dpr;
+		ctx.scale(dpr, dpr);
+		const colores = ['#2f6fed', '#1d9a55', '#f0b442', '#ff6b6b', '#9b6bff', '#2bc0d9'];
+		const piezas = Array.from({ length: 160 }, () => ({
+			x: innerWidth / 2 + (Math.random() - 0.5) * 120,
+			y: innerHeight / 2 - 40,
+			vx: (Math.random() - 0.5) * 14,
+			vy: -Math.random() * 13 - 4,
+			g: 0.32 + Math.random() * 0.12,
+			w: 6 + Math.random() * 6,
+			h: 8 + Math.random() * 8,
+			r: Math.random() * Math.PI,
+			vr: (Math.random() - 0.5) * 0.3,
+			c: colores[Math.floor(Math.random() * colores.length)],
+		}));
+		const t0 = performance.now();
+		const paso = (t) => {
+			ctx.clearRect(0, 0, innerWidth, innerHeight);
+			const vida = (t - t0) / 2600;
+			for (const p of piezas) {
+				p.vy += p.g;
+				p.vx *= 0.99;
+				p.x += p.vx;
+				p.y += p.vy;
+				p.r += p.vr;
+				ctx.save();
+				ctx.globalAlpha = Math.max(0, 1 - vida);
+				ctx.translate(p.x, p.y);
+				ctx.rotate(p.r);
+				ctx.fillStyle = p.c;
+				ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h * Math.abs(Math.cos(p.r * 2)));
+				ctx.restore();
+			}
+			if (vida < 1 && !$('#fin').hidden) requestAnimationFrame(paso);
+			else ctx.clearRect(0, 0, innerWidth, innerHeight);
+		};
+		requestAnimationFrame(paso);
+	}
+
+	// ---------- ZIP (sin compresión; guarda la fecha de captura como fecha de cada archivo)
+	function fechaDOS(fecha) {
+		let y, mo, d, h, mi, s;
+		if (fecha && fecha.local) [y, mo, d, h, mi, s] = fecha.local;
+		else {
+			const t = new Date(fecha && fecha.ms ? fecha.ms : Date.now());
+			[y, mo, d, h, mi, s] = [t.getFullYear(), t.getMonth() + 1, t.getDate(), t.getHours(), t.getMinutes(), t.getSeconds()];
+		}
+		if (y < 1980) [y, mo, d, h, mi, s] = [1980, 1, 1, 0, 0, 0];
+		return { hora: (h << 11) | (mi << 5) | (s >> 1), dia: ((y - 1980) << 9) | (mo << 5) | d };
+	}
+
+	async function crearZip(entradas) {
+		const enc = new TextEncoder();
+		const partes = [], central = [];
+		let offset = 0;
+		for (const e of entradas) {
+			const nombre = enc.encode(e.ruta);
+			const tam = e.blob.size;
+			const crc = e.crc != null ? e.crc : MOTOR.crc32(new Uint8Array(await e.blob.arrayBuffer()));
+			const { hora, dia } = fechaDOS(e.fecha);
+			const extra = new DataView(new ArrayBuffer(9));
+			extra.setUint16(0, 0x5455, true);
+			extra.setUint16(2, 5, true);
+			extra.setUint8(4, 1);
+			extra.setUint32(5, Math.floor(((e.fecha && e.fecha.ms) || Date.now()) / 1000), true);
+			const lh = new DataView(new ArrayBuffer(30));
+			lh.setUint32(0, 0x04034b50, true);
+			lh.setUint16(4, 20, true);
+			lh.setUint16(6, 0x0800, true);
+			lh.setUint16(8, 0, true);
+			lh.setUint16(10, hora, true);
+			lh.setUint16(12, dia, true);
+			lh.setUint32(14, crc, true);
+			lh.setUint32(18, tam, true);
+			lh.setUint32(22, tam, true);
+			lh.setUint16(26, nombre.length, true);
+			lh.setUint16(28, 9, true);
+			partes.push(lh.buffer, nombre, extra.buffer, e.blob);
+			const ch = new DataView(new ArrayBuffer(46));
+			ch.setUint32(0, 0x02014b50, true);
+			ch.setUint16(4, 0x031e, true);
+			ch.setUint16(6, 20, true);
+			ch.setUint16(8, 0x0800, true);
+			ch.setUint16(10, 0, true);
+			ch.setUint16(12, hora, true);
+			ch.setUint16(14, dia, true);
+			ch.setUint32(16, crc, true);
+			ch.setUint32(20, tam, true);
+			ch.setUint32(24, tam, true);
+			ch.setUint16(28, nombre.length, true);
+			ch.setUint16(30, 9, true);
+			ch.setUint32(38, (0o100644 << 16) >>> 0, true);
+			ch.setUint32(42, offset, true);
+			central.push(ch.buffer, nombre, extra.buffer);
+			offset += 30 + nombre.length + 9 + tam;
+		}
+		const tamCentral = central.reduce((t, p) => t + p.byteLength, 0);
+		const fin = new DataView(new ArrayBuffer(22));
+		fin.setUint32(0, 0x06054b50, true);
+		fin.setUint16(8, entradas.length, true);
+		fin.setUint16(10, entradas.length, true);
+		fin.setUint32(12, tamCentral, true);
+		fin.setUint32(16, offset, true);
+		return new Blob([...partes, ...central, fin.buffer], { type: 'application/zip' });
+	}
+
+	// ---------- eventos
+	function iniciarPagina() {
+		const radioCarpeta = document.querySelector('input[name="guardar"][value="carpeta"]');
+		if (puedeCarpeta) {
+			radioCarpeta.checked = true;
+		} else {
+			radioCarpeta.disabled = true;
+			$('#op-carpeta').style.opacity = '0.6';
+			$('#desc-carpeta').textContent = 'Este navegador no permite guardar directamente en una carpeta. Para usar esta opción, abre la página en Google Chrome o Microsoft Edge.';
+			document.querySelector('input[name="guardar"][value="zip"]').checked = true;
+		}
+		$('#btn-elegir').addEventListener('click', () => $('#entrada').click());
+		$('#btn-mas').addEventListener('click', () => $('#entrada').click());
+		$('#entrada').addEventListener('change', (e) => {
+			agregar(e.target.files);
+			e.target.value = '';
+		});
+		const zona = $('#zona');
+		zona.addEventListener('dragover', (e) => {
+			e.preventDefault();
+			if (!st.procesando) zona.classList.add('encima');
+		});
+		zona.addEventListener('dragleave', () => zona.classList.remove('encima'));
+		zona.addEventListener('drop', (e) => {
+			e.preventDefault();
+			zona.classList.remove('encima');
+			if (e.dataTransfer && e.dataTransfer.files.length) agregar(e.dataTransfer.files);
+		});
+		$('#btn-sel').addEventListener('click', () => {
+			const todas = st.lote.length && st.lote.every((x) => x.sel);
+			st.lote.forEach((x) => (x.sel = !todas));
+			st.lote.forEach(pintarEstado);
+			actualizarControles();
+		});
+		$('#btn-quitar').addEventListener('click', () => quitar(st.lote.filter((x) => x.sel)));
+		$('#btn-vaciar').addEventListener('click', () => {
+			if (st.lote.length && confirm(`¿Quitar las ${st.lote.length} fotos del lote? Los archivos originales no se modifican.`)) quitar([...st.lote]);
+		});
+		$('#btn-carpeta').addEventListener('click', (e) => {
+			e.preventDefault();
+			elegirCarpeta();
+		});
+		document.querySelectorAll('input[name="guardar"], input[name="nombre"]').forEach((x) => x.addEventListener('change', actualizarOpciones));
+		$('#prefijo').addEventListener('input', actualizarOpciones);
+		$('#prefijo').addEventListener('focus', () => (document.querySelector('input[name="nombre"][value="numero"]').checked = true, actualizarOpciones()));
+		$('#nombre-carpeta').addEventListener('input', actualizarOpciones);
+		$('#btn-reparar').addEventListener('click', iniciar);
+		$('#btn-detener').addEventListener('click', () => {
+			st.detener = true;
+			$('#btn-detener').disabled = true;
+			$('#t-prog').textContent = 'Deteniendo…';
+			dibujarProgreso();
+		});
+		document.querySelectorAll('.pestana').forEach((b) => b.addEventListener('click', () => cambiarPestana(b.dataset.p)));
+		$('#btn-reintentar').addEventListener('click', () => {
+			const archivos = delEstado('sinReparar').map((r) => r.item.archivo);
+			quitar([...st.lote]);
+			limpiarResultados();
+			agregar(archivos);
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		});
+		$('#btn-nuevo').addEventListener('click', () => {
+			quitar([...st.lote]);
+			limpiarResultados();
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		});
+		$('#btn-zip-otra').addEventListener('click', descargarZip);
+		$('#fin-ver').addEventListener('click', () => {
+			$('#fin').hidden = true;
+			$('#resultados').scrollIntoView({ behavior: 'smooth', block: 'start' });
+		});
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !$('#fin').hidden) $('#fin-ver').click();
+		});
+		$('#visor-cerrar').addEventListener('click', () => $('#visor').close());
+		$('#visor-ant').addEventListener('click', () => moverVisor(-1));
+		$('#visor-sig').addEventListener('click', () => moverVisor(1));
+		$('#visor-zoom').addEventListener('click', () => {
+			visor.real = !visor.real;
+			$('#lienzo').classList.toggle('real', visor.real);
+			$('#visor-zoom').textContent = visor.real ? 'Ajustar a la ventana' : 'Tamaño real';
+		});
+		$('#visor-franja').addEventListener('change', () => $('#lienzo').classList.toggle('con-franja', $('#visor-franja').checked));
+		$('#visor').addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowLeft') moverVisor(-1);
+			if (e.key === 'ArrowRight') moverVisor(1);
+		});
+		$('#visor').addEventListener('click', (e) => {
+			if (e.target === $('#visor')) $('#visor').close();
+		});
+		window.addEventListener('beforeunload', (e) => {
+			if (st.procesando) {
+				e.preventDefault();
+				e.returnValue = '';
+			}
+		});
+		actualizarOpciones();
+		dibujarLote();
+	}
+
+	iniciarPagina();
+})();
+</script>
+</body>
+</html>
